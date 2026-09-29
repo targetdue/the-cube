@@ -1,0 +1,2329 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Cube Cinematic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200..700&display=swap">
+<style>
+/* ==========================================================================
+   THE CUBE — variante cinematic.
+   Impianto: il media È l'interfaccia. Un solo carattere in tutte le taglie,
+   zero ombre, bordi quasi invisibili, neutri freddi. Il nero domina e due
+   sezioni chiare lo interrompono per far respirare la lettura tecnica.
+   L'arancio Target Due #FF8B00 è un segnale, mai un riempimento.
+   ========================================================================== */
+
+:root{
+  /* ground */
+  --black:#000000;
+  --surface:#0B0B0C;
+  --surface-2:#141416;
+  --line:#232326;
+  --line-soft:#171719;
+
+  /* ink su scuro */
+  --white:#FFFFFF;
+  --slate-hi:#C9CCD1;
+  --slate:#9EA3AB;
+  --slate-lo:#767D88;
+
+  /* sezioni chiare */
+  --paper:#EDEFF2;
+  --paper-2:#FFFFFF;
+  --paper-ink:#0C0C0D;
+  --paper-slate:#5A6068;
+  --paper-line:#D3D7DC;
+
+  /* identità */
+  --orange:#FF8B00;
+  --orange-lo:#8A4C00;
+
+  --font:'Inter Tight','Inter','Helvetica Neue',Arial,sans-serif;
+  --gut:clamp(20px,5vw,72px);
+  --maxw:1500px;
+  --measure:58ch;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--black);color:var(--white);
+  font-family:var(--font);font-size:16.5px;font-weight:380;
+  line-height:1.55;letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img,video,canvas{display:block;max-width:100%}
+[hidden]{display:none!important}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--orange);color:#000}
+
+/* ---------- tipografia: un carattere, tutta la scala ---------- */
+.label{
+  font-size:11px;font-weight:450;line-height:1.3;
+  text-transform:uppercase;letter-spacing:.2em;
+  color:var(--slate-lo);margin:0;
+}
+.label.sig{color:var(--orange)}
+.label.n{
+  display:flex;align-items:center;gap:12px;
+}
+.label.n::before{
+  content:"";width:22px;height:1px;background:currentColor;flex:none;opacity:.6;
+}
+
+h1,h2,h3{margin:0;font-weight:550;text-wrap:balance}
+.wordmark{
+  font-size:clamp(54px,14.5vw,196px);font-weight:600;
+  line-height:.8;letter-spacing:-.045em;text-transform:uppercase;margin:0;
+}
+h2{font-size:clamp(31px,5.1vw,66px);line-height:.95;letter-spacing:-.036em}
+h3{font-size:clamp(19px,2.1vw,25px);line-height:1.06;letter-spacing:-.022em;font-weight:550}
+.h4{font-size:clamp(16px,1.6vw,19px);font-weight:550;line-height:1.15;letter-spacing:-.018em;margin:0}
+
+p{margin:0 0 1.05em}
+p:last-child{margin-bottom:0}
+.lede{
+  font-size:clamp(18px,2vw,25px);font-weight:300;
+  line-height:1.36;letter-spacing:-.022em;color:var(--white);
+}
+.prose{max-width:var(--measure)}
+.prose p{color:var(--slate)}
+.prose strong{color:var(--white);font-weight:550}
+.q{font-style:italic;color:var(--white)}
+.num{font-variant-numeric:tabular-nums}
+.note{
+  font-size:13px;line-height:1.5;color:var(--slate-lo);
+  border-left:1px solid var(--line);padding-left:16px;max-width:66ch;
+}
+
+/* ---------- impianto ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
+.sec{padding-block:clamp(76px,10.5vw,152px);position:relative}
+.sec-head{display:flex;flex-direction:column;gap:clamp(14px,1.8vw,22px);margin-bottom:clamp(34px,5vw,64px)}
+.rule{height:1px;background:var(--line);border:0;margin:0}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(22px,3vw,44px)}
+.cols.tight{gap:clamp(18px,2.2vw,28px)}
+.cols.start{align-items:start}
+
+/* sezioni chiare: stesso impianto, inchiostro invertito */
+.lite{background:var(--paper);color:var(--paper-ink)}
+.lite .label{color:var(--paper-slate)}
+.lite .label.sig{color:#A44F00}
+.lite .prose p{color:var(--paper-slate)}
+.lite .prose strong{color:var(--paper-ink)}
+.lite .lede{color:var(--paper-ink)}
+.lite .note{color:var(--paper-slate);border-left-color:var(--paper-line)}
+.lite .rule{background:var(--paper-line)}
+
+/* ---------- barra di avanzamento + marchio fisso ---------- */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:100%;z-index:60;
+  background:transparent;pointer-events:none;
+}
+.progress i{
+  display:block;height:100%;width:0%;background:var(--orange);
+  transform-origin:left center;
+}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;background:#000}
+.hero-media{position:absolute;inset:0}
+.hero-media video,.hero-media img{width:100%;height:100%;object-fit:cover}
+.hero-veil{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(to bottom,rgba(0,0,0,.72) 0%,rgba(0,0,0,.12) 34%,rgba(0,0,0,.46) 68%,#000 100%),
+    radial-gradient(120% 90% at 50% 45%,rgba(0,0,0,0) 30%,rgba(0,0,0,.6) 100%);
+}
+.hero-in{
+  position:relative;width:100%;max-width:var(--maxw);margin:0 auto;
+  padding-inline:var(--gut);padding-block:clamp(48px,8vw,96px);
+  display:flex;flex-direction:column;gap:clamp(20px,3vw,34px);
+}
+.hero-top{
+  position:absolute;top:0;left:0;right:0;z-index:2;
+  max-width:var(--maxw);margin:0 auto;padding:clamp(20px,3vw,34px) var(--gut);
+  display:flex;justify-content:space-between;align-items:center;gap:20px;
+}
+.hero-sub{max-width:44ch;font-size:clamp(16px,1.75vw,21px);font-weight:300;line-height:1.38;letter-spacing:-.02em;color:var(--slate-hi)}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 0;
+  font-size:11px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--slate-lo);
+}
+.meta span{padding-right:20px;margin-right:20px;border-right:1px solid var(--line);line-height:1}
+.meta span:last-child{border-right:0;padding-right:0;margin-right:0}
+
+.scrollcue{
+  display:flex;align-items:center;gap:10px;
+  font-size:10px;font-weight:450;text-transform:uppercase;letter-spacing:.24em;color:var(--slate-lo);
+}
+.scrollcue i{display:block;width:1px;height:26px;background:linear-gradient(to bottom,var(--orange),transparent);animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{0%,100%{opacity:.25;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ---------- marchi ---------- */
+.marks{display:flex;align-items:center;gap:clamp(14px,2.4vw,26px);flex-wrap:wrap}
+.marks-lab{font-size:10px;font-weight:450;text-transform:uppercase;letter-spacing:.24em;color:var(--slate-lo)}
+.marks-row{display:flex;align-items:center;gap:clamp(16px,2.6vw,28px)}
+.marks img{height:clamp(26px,3.2vw,38px);width:auto;opacity:.95}
+.marks svg{height:clamp(21px,2.6vw,30px);width:auto;aspect-ratio:295/85;flex:none;color:var(--white);opacity:.95}
+.marks .x{width:1px;height:clamp(18px,2.2vw,26px);background:var(--line);display:block}
+
+/* ---------- bande media a tutta larghezza ---------- */
+.band{position:relative;padding:0;overflow:hidden;background:#000}
+.band-media{position:relative;margin:0;min-height:min(88vh,760px);display:flex;align-items:flex-end}
+.band-media video,.band-media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.band-veil{position:absolute;inset:0;background:linear-gradient(to top,#000 0%,rgba(0,0,0,.92) 22%,rgba(0,0,0,.4) 55%,rgba(0,0,0,.25) 100%)}
+.band-cap{
+  position:relative;width:100%;max-width:var(--maxw);margin:0 auto;
+  padding-inline:var(--gut);padding-block:clamp(40px,6vw,84px);
+  display:flex;flex-direction:column;gap:18px;
+}
+.band-txt{max-width:60ch;color:var(--slate);margin:0}
+.band-txt strong{color:var(--white);font-weight:550}
+
+/* ---------- STAGE 3D ---------- */
+.build{position:relative;background:#000;height:660vh}
+.build-pin{position:sticky;top:0;height:100svh;overflow:hidden;border-block:1px solid var(--line)}
+.build-canvas{position:absolute;inset:0;width:100%;height:100%}
+.build-canvas canvas{width:100%;height:100%;display:block}
+.build-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7}
+.build-ui{
+  position:absolute;inset:0;pointer-events:none;
+  max-width:var(--maxw);margin:0 auto;padding:clamp(22px,4vw,54px) var(--gut);
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.build-top{display:flex;flex-direction:column;gap:14px;max-width:clamp(300px,36vw,540px)}
+.build-top h2{font-size:clamp(27px,3.5vw,46px)}
+.beats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;max-width:40ch}
+.beats li{
+  display:grid;grid-template-columns:auto 1fr;gap:2px 14px;
+  padding:9px 0 9px 14px;border-left:1px solid var(--line-soft);
+  opacity:.3;transition:opacity .45s ease,border-color .45s ease;
+}
+.beats li.on{opacity:1;border-left-color:var(--orange)}
+.beats .bn{grid-row:1;align-self:center;font-size:10px;font-weight:450;letter-spacing:.16em;color:var(--slate-lo);font-variant-numeric:tabular-nums}
+.beats li.on .bn{color:var(--orange)}
+.beats .bt{grid-row:1;font-size:clamp(13.5px,1.4vw,16px);font-weight:550;text-transform:uppercase;letter-spacing:.01em;line-height:1.1}
+.beats .bd{grid-column:2;grid-row:2;font-size:13px;line-height:1.4;color:var(--slate-lo);max-height:0;overflow:hidden;transition:max-height .5s ease,opacity .4s ease;opacity:0}
+.beats li.on .bd{max-height:80px;opacity:1}
+.build-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.build-cap{font-size:11px;font-weight:450;letter-spacing:.02em;color:var(--slate-lo);max-width:46ch;line-height:1.45}
+
+@media(max-width:860px){
+  .build{height:520vh}
+  .build-ui{padding-block:clamp(70px,14vw,110px)}
+  .build-top{max-width:none}
+  .beats{max-width:none}
+  .beats .bd{display:none}
+}
+
+/* ---------- numeri ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.stat{background:#000;padding:clamp(18px,2.4vw,28px);display:flex;flex-direction:column;gap:8px}
+.stat .v{font-size:clamp(26px,3.6vw,46px);font-weight:500;line-height:.94;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.stat .k{font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--slate-lo);line-height:1.35}
+.stat.sig{background:#0A0603}
+.stat.sig .v{color:var(--orange)}
+.stat.ref .v{color:var(--slate-lo);font-weight:400}
+
+/* ---------- confronto passo ---------- */
+.pitch{position:relative;overflow:hidden;border:1px solid var(--line);background:#000;touch-action:pan-y}
+.pitch-img{position:relative;aspect-ratio:16/9}
+.pitch-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pitch-layer{position:absolute;inset:0}
+.pitch-layer::after{content:"";position:absolute;inset:0;pointer-events:none}
+/* passo fine: nessuna trama. A quaranta centimetri il nero fra un pixel e
+   l'altro non c'è, e quello che resta è l'immagine: va mostrato così. */
+.pitch-fine img{filter:contrast(1.05) saturate(1.04)}
+/* passo grosso: la trama si legge e l'immagine si sgrana */
+.pitch-coarse{clip-path:inset(0 0 0 50%)}
+.pitch-coarse::after{
+  background:
+    repeating-linear-gradient(to right,rgba(0,0,0,.70) 0 3px,transparent 3px 10px),
+    repeating-linear-gradient(to bottom,rgba(0,0,0,.70) 0 3px,transparent 3px 10px);
+}
+.pitch-coarse img{filter:saturate(.78) contrast(.88) brightness(.94)}
+.pitch-split{position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--orange);pointer-events:none}
+.pitch-split::after{
+  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:38px;height:38px;border:1px solid var(--orange);border-radius:50%;
+  background:rgba(0,0,0,.55);
+}
+.pitch-range{
+  position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;
+  -webkit-appearance:none;appearance:none;background:transparent;
+}
+.pitch-range:focus-visible{opacity:1;outline:2px solid var(--orange);outline-offset:-2px}
+.pitch-tag{
+  position:absolute;bottom:0;padding:9px 13px;background:rgba(0,0,0,.72);
+  font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;line-height:1;
+}
+.pitch-tag.l{left:0;color:var(--orange)}
+.pitch-tag.r{right:0;color:var(--slate)}
+
+/* ---------- pelle esterna ---------- */
+.skins{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:clamp(10px,1.4vw,16px)}
+.skin{margin:0;display:flex;flex-direction:column;gap:12px}
+.skin img{aspect-ratio:4/5;object-fit:cover;width:100%;background:var(--surface)}
+.skin figcaption{font-size:12.5px;line-height:1.4;color:var(--slate);display:flex;flex-direction:column;gap:3px}
+.skin figcaption i{font-style:normal;font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--slate-lo)}
+
+/* ---------- tre livelli ---------- */
+.lv{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.lv-c{background:#000;padding:clamp(22px,2.8vw,34px);display:flex;flex-direction:column;gap:16px}
+.lv-c.sig{background:#0A0603;border-top:1px solid var(--orange)}
+.lv-h{display:flex;align-items:baseline;gap:12px}
+.lv-h .n{font-size:11px;font-weight:450;letter-spacing:.16em;color:var(--slate-lo);font-variant-numeric:tabular-nums}
+.lv-c.sig .lv-h .n{color:var(--orange)}
+.lv-h .t{font-size:clamp(21px,2.4vw,30px);font-weight:550;letter-spacing:-.028em;line-height:1}
+.lv-h .s{font-size:11px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--slate-lo)}
+.lv-c p{color:var(--slate);font-size:14.5px;line-height:1.5;flex:1}
+.lv-c p strong{color:var(--white);font-weight:550}
+
+.tw{overflow-x:auto;border:1px solid var(--line);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line-soft);font-size:13.5px;vertical-align:middle}
+thead th{
+  font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--slate-lo);
+  border-bottom:1px solid var(--line);background:var(--surface);white-space:nowrap;
+}
+thead th.on{color:var(--orange)}
+tbody th{font-weight:400;color:var(--slate);font-size:13.5px}
+tbody td{color:var(--white);font-weight:450;text-align:center}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+td.y{color:var(--orange);font-size:16px;line-height:1}
+td.no{color:#3A3A3E}
+
+/* ---------- casi (sezione chiara, griglia editoriale) ---------- */
+.cases{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(14px,2vw,28px)}
+.case{margin:0;display:flex;flex-direction:column;gap:14px}
+.case.big{grid-column:span 7}
+.case.sml{grid-column:span 5}
+.case.wide{grid-column:span 12}
+.case.wide .mf{aspect-ratio:16/9}
+.case.wide p{max-width:68ch}
+.case img{width:100%;object-fit:cover;background:#111}
+.case.big img{aspect-ratio:16/10}
+.case.sml img{aspect-ratio:4/3}
+.case-m{font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--paper-slate);margin:0}
+.case h3{color:var(--paper-ink)}
+.case p{font-size:14.5px;line-height:1.5;color:var(--paper-slate);max-width:52ch}
+.case .kick{color:var(--paper-ink);font-weight:450}
+@media(max-width:860px){.case.big,.case.sml,.case.wide{grid-column:span 12}
+  .case.wide .mf{aspect-ratio:16/10}}
+
+/* ---------- noleggio ---------- */
+.ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.rung{background:#000;padding:clamp(20px,2.4vw,28px);display:flex;flex-direction:column;gap:12px}
+.rung .w{font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--slate-lo)}
+.rung .t{font-size:clamp(17px,1.9vw,22px);font-weight:550;letter-spacing:-.024em;line-height:1.08}
+.rung p{font-size:13.5px;line-height:1.5;color:var(--slate)}
+.rung.sig{background:#0A0603}
+.rung.sig .t{color:var(--orange)}
+.rung.sig .w{color:var(--orange)}
+
+/* ---------- le due aziende ---------- */
+.house{border:1px solid var(--line);background:var(--surface);padding:clamp(22px,2.8vw,34px);display:flex;flex-direction:column;gap:16px}
+.house-mark{height:clamp(30px,3.6vw,42px);display:flex;align-items:center}
+.house-mark img{height:100%;width:auto}
+.house-mark svg{height:76%;width:auto;aspect-ratio:295/85;color:var(--white)}
+.house p{font-size:14.5px;line-height:1.5;color:var(--slate)}
+.house .roles{color:var(--slate-hi);font-size:13.5px}
+.house .roles b{color:var(--white);font-weight:550}
+
+/* ---------- citazione ---------- */
+.pull{padding-block:clamp(60px,9vw,130px);border-block:1px solid var(--line);background:#000}
+.pull p{
+  margin:0;font-size:clamp(27px,5vw,62px);font-weight:500;
+  line-height:1;letter-spacing:-.04em;max-width:19ch;text-wrap:balance;
+}
+.pull em{font-style:normal;color:var(--orange)}
+
+/* ---------- chiusura ---------- */
+.close{padding-block:clamp(84px,12vw,170px);background:#000}
+.close h2{font-size:clamp(40px,8.5vw,120px);line-height:.88;letter-spacing:-.045em}
+.contact{display:flex;flex-wrap:wrap;gap:0;margin-top:clamp(26px,3.4vw,42px)}
+.contact a{
+  font-size:clamp(15px,1.7vw,19px);font-weight:450;text-decoration:none;letter-spacing:-.015em;
+  padding:12px 22px 12px 0;margin-right:22px;border-right:1px solid var(--line);
+  color:var(--white);transition:color .2s ease;min-height:44px;display:inline-flex;align-items:center;
+}
+.contact a:hover{color:var(--orange)}
+.contact a:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.contact a:last-child{border-right:0;margin-right:0}
+.foot{
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  padding-block:22px;border-top:1px solid var(--line);
+  font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--slate-lo);
+}
+
+/* ---------- motion: stato iniziale, neutralizzato senza JS ---------- */
+.js .rv,.js .rv-c>*{transition:opacity .72s ease,transform .82s cubic-bezier(.16,1,.3,1)}
+.js .rv{opacity:0;transform:translateY(22px)}
+.js .rv-c>*{opacity:0;transform:translateY(20px)}
+.js .rv.in,.js .rv-c.in>*{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .js .rv,.js .rv-c>*{opacity:1!important;transform:none!important}
+  .scrollcue i{animation:none}
+  *{transition-duration:.01ms!important}
+}
+
+@media(max-width:700px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .cmp-stats{grid-template-columns:1fr}
+  .hero-top .marks-lab{display:none}
+}
+</style>
+<style>
+/* ==========================================================================
+   Secondo strato: scene tridimensionali, indice di sezione, rivelazioni.
+   ========================================================================== */
+
+/* ---------- contenitore comune delle scene WebGL ---------- */
+.stage{position:absolute;inset:0;width:100%;height:100%}
+.stage canvas{width:100%;height:100%;display:block;touch-action:pan-y}
+
+/* ---------- titoli che entrano riga per riga ---------- */
+.ln{display:block;overflow:hidden;padding-bottom:.04em}
+.js .ln>i{display:block;font-style:normal;transform:translateY(106%);transition:transform .95s cubic-bezier(.16,1,.3,1)}
+.js .ln.in>i{transform:none}
+
+/* ---------- invito in testa ---------- */
+.hero-cta{text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:color .25s ease}
+.hero-cta i{font-style:normal;transition:transform .3s ease}
+.hero-cta:hover{color:var(--orange)}
+.hero-cta:hover i{transform:translateY(3px)}
+.hero-cta:focus-visible{outline:1px solid var(--orange);outline-offset:6px}
+
+/* ---------- indice laterale ---------- */
+.sidx{
+  position:fixed;right:clamp(14px,1.6vw,26px);top:50%;transform:translateY(-50%);
+  z-index:50;display:none;flex-direction:column;gap:2px;
+}
+.sidx a{
+  display:flex;align-items:center;justify-content:flex-end;gap:9px;
+  padding:5px 0;text-decoration:none;color:#6E6E78;
+  font-size:9.5px;font-weight:450;letter-spacing:.18em;text-transform:uppercase;
+  transition:color .3s ease;
+}
+.sidx a i{display:block;width:14px;height:1px;background:currentColor;transition:width .35s cubic-bezier(.22,1,.36,1)}
+.sidx a span{opacity:0;transform:translateX(6px);transition:opacity .3s ease,transform .35s cubic-bezier(.22,1,.36,1);white-space:nowrap}
+.sidx a:hover{color:#fff}
+.sidx a:hover span{opacity:1;transform:none}
+.sidx a.on{color:#FF8B00}
+.sidx a.on i{width:28px}
+.sidx a.on span{opacity:1;transform:none}
+.sidx a:focus-visible{outline:1px solid var(--orange);outline-offset:4px}
+.sidx.onlite a{color:#9198A1}
+.sidx.onlite a:hover{color:var(--paper-ink)}
+.sidx.onlite a.on{color:#A44F00}
+@media(min-width:1180px){ .sidx{display:flex} }
+
+/* ---------- montaggio: barra di scorrimento interna e contatore ---------- */
+.build-scrub{position:absolute;right:clamp(14px,1.6vw,26px);top:22%;bottom:22%;width:1px;background:rgba(255,255,255,.1)}
+.build-scrub i{position:absolute;left:0;top:0;width:1px;height:0;background:var(--orange);display:block}
+@media(min-width:1180px){ .build-scrub{display:none} }
+
+.counter{display:flex;align-items:flex-end;gap:10px;flex:none}
+.counter .cv{
+  font-size:clamp(34px,4.4vw,62px);font-weight:500;line-height:.82;letter-spacing:-.05em;
+  color:var(--white);font-variant-numeric:tabular-nums;
+}
+.counter .ck{
+  font-size:9.5px;font-weight:450;text-transform:uppercase;letter-spacing:.17em;
+  color:var(--slate-lo);line-height:1.35;padding-bottom:.35em;
+}
+@media(max-width:860px){ .counter{display:none} }
+
+/* ---------- configuratore dei formati (sezione chiara) ---------- */
+.cfg{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+@media(max-width:940px){ .cfg{grid-template-columns:1fr} }
+.cfg-stage{
+  position:relative;aspect-ratio:5/4;background:var(--paper-2);
+  border:1px solid var(--paper-line);overflow:hidden;
+  cursor:grab;
+}
+.cfg-stage:active{cursor:grabbing}
+.cfg-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cfg-hint{
+  position:absolute;left:0;bottom:0;margin:0;padding:10px 14px;pointer-events:none;
+  font-size:10px;font-weight:450;text-transform:uppercase;letter-spacing:.17em;
+  color:var(--paper-slate);transition:opacity .5s ease;
+}
+.cfg-hint.off{opacity:0}
+.cfg-ctl{position:absolute;right:10px;bottom:10px;display:flex;gap:1px;background:var(--paper-line);border:1px solid var(--paper-line)}
+.cfg-ctl button{
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:var(--paper-2);color:var(--paper-slate);transition:background .2s ease,color .2s ease;
+}
+.cfg-ctl button:hover{background:var(--paper-ink);color:#fff}
+.cfg-ctl button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+.stage:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+.seg{display:inline-flex;border:1px solid var(--paper-line);background:var(--paper-2);align-self:flex-start}
+.seg button{
+  padding:11px 24px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.16em;
+  color:var(--paper-slate);transition:background .25s ease,color .25s ease;min-height:44px;
+}
+.seg button.on{background:var(--paper-ink);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+/* ---------- chiusura: il volume a filo di ferro dietro al testo ---------- */
+.close{position:relative;overflow:hidden}
+.close>.wrap{position:relative;z-index:1}
+.close-3d{
+  position:absolute;top:-6%;bottom:-6%;right:-8%;left:auto;width:66%;z-index:0;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 26%,#000 100%);
+  mask-image:linear-gradient(to right,transparent 0%,#000 26%,#000 100%);
+}
+@media(max-width:1000px){ .close-3d{display:none} }
+
+.cfg-side{display:flex;flex-direction:column;gap:clamp(16px,2.2vw,24px)}
+.cfg-lede{font-size:clamp(16px,1.7vw,19px);font-weight:300;line-height:1.4;letter-spacing:-.018em;color:var(--paper-ink);margin:0;min-height:4.3em}
+.cfg-stats{margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--paper-line);border:1px solid var(--paper-line)}
+.cfg-stats>div{background:var(--paper-2);padding:13px 15px;display:flex;flex-direction:column;gap:5px}
+.cfg-stats dt{font-size:10px;font-weight:450;text-transform:uppercase;letter-spacing:.16em;color:var(--paper-slate)}
+.cfg-stats dd{margin:0;font-size:clamp(15px,1.7vw,19px);font-weight:550;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+@media(max-width:700px){ .cfg-stats{grid-template-columns:1fr} }
+
+/* ---------- le tre pareti svolte in piano ---------- */
+.unroll{margin:0;display:flex;flex-direction:column;gap:18px}
+.unroll svg{width:100%;height:auto;display:block;overflow:visible}
+.unroll figcaption{font-size:13.5px;line-height:1.55;color:var(--slate-lo);max-width:78ch}
+.unroll figcaption b{color:var(--white);font-weight:550}
+.ur-panels rect{fill:#15151B;stroke:#35353E;stroke-width:2}
+.ur-panels .ur-hero{fill:#1E1E26}
+.ur-grid{fill:none;stroke:rgba(255,255,255,.10);stroke-width:1}
+.ur-fold path{fill:none;stroke:var(--orange);stroke-width:1.5;opacity:.5;stroke-dasharray:5 5}
+.ur-169{fill:none;stroke:var(--orange);stroke-width:2;stroke-dasharray:11 7}
+.ur-t169{fill:var(--orange);font-family:var(--font);font-size:17px;font-weight:500;letter-spacing:.11em;text-transform:uppercase}
+.ur-dimt{font-family:var(--font);font-size:15px;font-weight:450;letter-spacing:.11em;text-transform:uppercase}
+.ur-dimt{fill:var(--slate-lo)}
+.ur-lead{fill:none;stroke:var(--orange);stroke-width:1.5}
+.ur-dim path{fill:none;stroke:var(--line);stroke-width:1.5}
+.ur-mirror rect{fill:url(#urFade)}
+.ur-lab{fill:var(--slate-lo);font-family:var(--font);font-size:15px;font-weight:450;letter-spacing:.13em;text-transform:uppercase}
+.ur-lab.on{fill:var(--white)}
+.ur-cap{fill:var(--slate-lo);font-family:var(--font);font-size:15px;font-weight:400;letter-spacing:.05em}
+
+/* ---------- banda dei marchi ----------
+   Trattamento monocromatico: i loghi arrivano in colori diversi e su fondo
+   nero devono pesare uguale, quindi si portano tutti a bianco e si tengono
+   in ombra finche' non ci si passa sopra. */
+.trust{padding-block:clamp(46px,6vw,80px);background:#000;border-block:1px solid var(--line);overflow:hidden}
+.trust-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
+.tk{
+  position:relative;margin-block:clamp(24px,3.2vw,40px);
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
+  mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
+}
+.tk-track{
+  display:flex;align-items:center;gap:clamp(38px,5.4vw,84px);
+  width:max-content;will-change:transform;
+  animation:tkroll 58s linear infinite;
+}
+.tk:hover .tk-track,.tk:focus-within .tk-track,.tk.stopped .tk-track{animation-play-state:paused}
+@keyframes tkroll{ from{transform:translate3d(0,0,0)} to{transform:translate3d(-50%,0,0)} }
+.tk img{
+  height:clamp(30px,3.3vw,46px);max-width:clamp(104px,11.5vw,168px);
+  width:auto;object-fit:contain;flex:none;
+  filter:brightness(0) invert(1);opacity:.58;
+  transition:opacity .35s ease;
+}
+.tk a,.tk span.tki{display:block;flex:none}
+.tk img:hover{opacity:1}
+.tk-pause{
+  font-size:10px;font-weight:450;text-transform:uppercase;letter-spacing:.18em;
+  color:var(--slate-lo);padding:8px 0;min-height:44px;display:inline-flex;align-items:center;gap:9px;
+  transition:color .25s ease;
+}
+.tk-pause::before{content:"";width:7px;height:7px;border:1px solid currentColor;flex:none}
+.tk-pause[aria-pressed="true"]::before{background:currentColor}
+.tk-pause:hover{color:var(--white)}
+.tk-pause:focus-visible{outline:1px solid var(--orange);outline-offset:4px}
+@media (prefers-reduced-motion: reduce){
+  .tk{-webkit-mask-image:none;mask-image:none}
+  .tk-track{animation:none;width:auto;flex-wrap:wrap;justify-content:flex-start;gap:26px 44px;padding-inline:var(--gut);max-width:var(--maxw);margin-inline:auto}
+  .tk-pause{display:none}
+}
+
+/* ---------- i quattro registri di produzione ---------- */
+.regs{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:clamp(28px,3.6vw,48px)}
+.reg{background:#000;padding:clamp(18px,2.2vw,26px);display:flex;flex-direction:column;gap:11px}
+.reg .rk{font-size:10.5px;font-weight:450;text-transform:uppercase;letter-spacing:.17em;color:var(--orange)}
+.reg p{font-size:13.5px;line-height:1.5;color:var(--slate);margin:0}
+
+/* ---------- immagini: cornice con parallasse e tendina d'apertura ---------- */
+.mf{position:relative;overflow:hidden;display:block;background:var(--surface)}
+.mf>img,.mf>video{width:100%;height:100%;object-fit:cover;display:block;will-change:transform}
+.js .mf{clip-path:inset(0 0 100% 0)}
+.js .mf.in{clip-path:inset(0 0 0 0);transition:clip-path 1s cubic-bezier(.16,1,.3,1)}
+.skin .mf{aspect-ratio:16/10}
+.case.big .mf{aspect-ratio:16/10}
+.case.sml .mf{aspect-ratio:4/3}
+.case .mf>img,.case .mf>video{height:118%;position:absolute;top:-9%;left:0}
+.skin .mf>img{height:108%;position:absolute;top:-4%;left:0}
+
+@media (prefers-reduced-motion: reduce){
+  .js .ln>i{transform:none!important}
+  .js .mf{clip-path:none!important}
+  .mf>img,.mf>video{position:static!important;height:auto!important}
+}
+</style>
+<script>document.documentElement.classList.add('js');</script>
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <defs>
+    <g id="rs-mark"><g clip-path="url(#rsclip)"><path d="M14.13 25.7701C-1.01004 16.0001 -4.23004 12.4301 14.13 25.7701Z" fill="currentColor"></path><path d="M34.5301 52.05C30.3201 64.23 28.4101 66.61 34.5301 52.05Z" fill="currentColor"></path><path d="M14.21 58.0901C-2.71004 68.2301 -6.65004 72.4501 14.21 58.0901Z" fill="currentColor"></path><path d="M19.8099 16.8099C4.30992 -6.16012 2.49992 -5.04012 19.8099 16.8099Z" fill="currentColor"></path><path d="M57.5801 67.77C75.5601 89.42 73.7201 90.6 57.5801 67.77Z" fill="currentColor"></path><path d="M42.4099 55.03C46.0299 65.37 44.9399 63.89 42.4099 55.03Z" fill="currentColor"></path><path d="M18.8599 67.6399C2.49992 90.3599 0.719917 89.1999 18.8599 67.6399Z" fill="currentColor"></path><path d="M57.3 17.1501C74.98 -4.41993 73.23 -5.52993 57.3 17.1501Z" fill="currentColor"></path><path d="M62.46 25.8799C81.59 12.1099 78.25 15.7399 62.46 25.8799Z" fill="currentColor"></path><path d="M42.0299 43.5299C41.8899 43.3699 41.7599 43.2199 41.6299 43.0599C41.9299 42.9099 42.2199 42.7699 42.5199 42.6199C42.1599 42.4199 41.7999 42.2299 41.4499 42.0299C42.0899 41.3299 42.7299 40.6299 43.3899 39.9099C51.3099 33.9899 57.6199 29.3699 62.4799 25.8699C58.4799 28.4399 53.6899 31.4199 48.2699 34.6399C49.0999 33.7499 49.9399 32.8399 50.7999 31.9299C48.3999 33.6899 46.0899 35.3699 43.8799 36.9799C49.0899 29.0299 53.5899 22.4399 57.3099 17.1299C53.5799 21.6899 48.9799 27.1499 43.4599 33.4999L42.8799 34.1599C65.0099 -9.0301 62.1299 -4.0201 42.7999 34.2599L41.8199 35.3799C42.0399 34.8999 42.2599 34.4199 42.4799 33.9199C42.1599 34.5199 41.8499 35.1199 41.5299 35.7099L41.2999 35.9699C42.5899 33.5499 43.9299 31.0199 45.3399 28.3799C44.0299 30.4199 42.7499 32.4099 41.4999 34.3299C41.8399 33.2899 42.1599 32.2999 42.4799 31.3699C42.0199 32.5399 41.5099 33.7999 40.9499 35.1799C40.1799 36.3599 38.4599 38.9899 38.3799 39.1099C38.0099 38.5399 37.6399 37.9599 37.2699 37.3799C36.2099 34.0999 35.3499 31.3699 34.6699 29.1499C35.1099 30.9899 35.5999 33.1499 36.1199 35.5799C34.6299 33.2399 33.0999 30.8099 31.5199 28.2899C32.7099 30.6199 33.8599 32.8699 34.9699 35.0399C35.0199 35.1699 35.0699 35.2899 35.1199 35.4199C34.8199 35.0699 34.5299 34.7199 34.2299 34.3699C33.5199 32.8799 32.8299 31.4399 32.1699 30.0599C32.7899 31.3899 33.4299 32.7699 34.0899 34.1999C28.3699 27.4099 23.6299 21.5999 19.8199 16.7799C23.4599 22.1799 27.8599 28.8999 32.9499 36.9999C30.6999 35.3799 28.3499 33.6799 25.8999 31.9099C26.7099 32.7799 27.4999 33.6399 28.2799 34.4799C22.8599 31.2699 18.0899 28.2899 14.1299 25.7299C18.9799 29.2599 25.3299 33.9599 33.3699 40.0399C33.9999 40.7299 34.6199 41.4199 35.2299 42.0899C34.8199 42.3199 34.4099 42.5399 33.9999 42.7699C34.2999 42.9099 34.5899 43.0499 34.8899 43.1899C34.6799 43.4199 34.4799 43.6499 34.2699 43.8799C25.9599 49.8499 19.3299 54.5099 14.1999 58.0399C18.4599 55.4899 23.5399 52.5599 29.2599 49.4599C28.2499 50.5799 27.2299 51.7099 26.1799 52.8599C28.3099 51.2399 30.3499 49.6899 32.3299 48.1899C27.1199 55.9399 22.6099 62.3899 18.8599 67.5999C22.1899 63.6399 26.1999 58.9899 30.9099 53.6799L33.3099 50.9899C18.7499 79.1399 18.4599 79.6899 18.4599 79.6999C18.4599 79.6899 18.7799 79.1299 34.9399 49.5999C34.9399 49.6099 34.9299 49.6299 34.9199 49.6399C33.8299 51.7699 32.6899 53.9699 31.5199 56.2599C32.6799 54.3999 33.8199 52.5899 34.9399 50.8299C34.7999 51.2299 34.6699 51.6299 34.5399 52.0099C34.7599 51.4899 34.9899 50.9499 35.2299 50.3899C36.1999 48.8599 37.0099 47.4299 37.9399 45.9799C37.9899 47.3599 37.9999 47.7399 38.0099 47.8499C38.0099 47.7299 38.0099 47.2999 38.0899 45.7599C38.0999 45.8199 38.1299 46.0199 38.1399 46.0699L38.2799 45.5999C38.8799 46.5799 39.4899 47.5799 40.1099 48.5899C41.0299 51.0899 41.7899 53.2199 42.4199 54.9999C42.0199 53.5999 41.5799 52.0099 41.1299 50.2599C42.3399 52.2499 43.5799 54.3099 44.8399 56.4199C43.5199 53.6899 42.2699 51.0799 41.0599 48.5799C41.5899 49.1699 42.1099 49.7599 42.6199 50.3399L42.8799 50.6399C61.8299 88.4999 64.9099 93.8399 42.9799 50.7599L43.1899 50.9999C48.9399 57.5099 53.7199 63.0999 57.5799 67.7499C53.9299 62.5899 49.5499 56.1899 44.4999 48.5299C46.3799 49.9699 48.3199 51.4599 50.3399 53.0199C49.2199 51.7499 48.1299 50.4999 47.0499 49.2799C52.9899 52.3699 58.2499 55.3099 62.6499 57.8699C57.3999 54.3099 50.5899 49.5899 42.0399 43.5099" fill="currentColor"></path><path d="M62.6399 57.8899C83.5899 72.0899 79.6899 67.8299 62.6399 57.8899Z" fill="currentColor"></path><path d="M34.67 29.18C32.4 19.71 31.37 18.32 34.67 29.18Z" fill="currentColor"></path><path d="M32.16 30.0901C16.64 -3.31992 14.2 -7.46992 32.16 30.0901Z" fill="currentColor"></path><path d="M42.47 31.39C48.31 16.71 46.69 18.81 42.47 31.39Z" fill="currentColor"></path><path d="M115.3 53.41V36.58L115.43 36.45H124.06L124.19 36.58V39.1199L124.06 39.25H121.15C119.29 39.25 118.31 40.2799 118.31 42.0999V53.41L118.18 53.54H115.43L115.29 53.41H115.3Z" fill="currentColor"></path><path d="M124.48 45.02C124.48 39.73 127.56 35.99 132.38 35.99C136.65 35.99 139.82 38.87 139.82 44.32V46.24L139.69 46.37H129.9C128.71 46.37 128.02 46.64 128.02 47.83C128.02 49.62 129.58 51.33 132.42 51.33C134.73 51.33 135.89 50.11 136.29 49.05L136.42 48.92H139.2L139.33 49.05C139.06 51.43 136.68 54.04 132.48 54.04C127.46 54.04 124.48 50.31 124.48 45.02ZM129.94 43.96H134.63C135.85 43.96 136.45 43.53 136.45 42.3C136.45 40.35 134.7 38.66 132.28 38.66C129.86 38.66 128.04 40.35 128.04 42.3C128.05 43.53 128.71 43.96 129.94 43.96Z" fill="currentColor"></path><path d="M141.84 45.02C141.84 39.73 144.89 35.96 150.01 35.96C154.64 35.96 157.31 38.97 157.45 42.61L157.32 42.74H154.41L154.28 42.61C154.15 40.47 152.36 38.94 150.01 38.94C147.1 38.94 144.98 41.19 144.98 45.02C144.98 48.85 147.09 51.07 150.01 51.07C152.39 51.07 154.14 49.55 154.28 47.4L154.41 47.27H157.32L157.45 47.4C157.32 51.03 154.64 54.05 150.01 54.05C144.88 54.05 141.84 50.31 141.84 45.02Z" fill="currentColor"></path><path d="M159.52 45.02C159.52 39.76 162.57 35.99 167.69 35.99C172.81 35.99 175.83 39.73 175.83 45.02C175.83 50.31 172.78 54.05 167.69 54.05C162.56 54.05 159.52 50.31 159.52 45.02ZM167.69 51.06C170.6 51.06 172.72 48.78 172.72 45.01C172.72 41.24 170.61 38.93 167.69 38.93C164.77 38.93 162.63 41.18 162.63 45.01C162.63 48.84 164.74 51.06 167.69 51.06Z" fill="currentColor"></path><path d="M178.99 53.41V36.58L179.12 36.45H187.75L187.88 36.58V39.1199L187.75 39.25H184.84C182.98 39.25 182 40.2799 182 42.0999V53.41L181.87 53.54H179.12L178.98 53.41H178.99Z" fill="currentColor"></path><path d="M188.18 44.9799C188.18 40.1899 190.83 36.4499 196.18 36.4499H200.74L200.87 36.3199V30.5399L201 30.4099H203.75L203.88 30.5399V53.4199L203.75 53.5499H196.18C190.82 53.5499 188.18 49.7799 188.18 44.9899M196.18 50.5799C199.16 50.5799 201 48.3699 201 45.0199C201 41.6699 199.14 39.4299 196.18 39.4299C193.22 39.4299 191.32 41.6399 191.32 45.0199C191.32 48.3999 193.18 50.5799 196.18 50.5799Z" fill="currentColor"></path><path d="M207.06 48.35L207.19 48.22H210.07L210.2 48.35C210.3 50.21 211.89 51.36 213.87 51.36C215.73 51.36 217.18 50.34 217.18 48.85C217.18 45.05 207.42 48.23 207.42 41.68C207.42 38.34 210.03 35.96 213.87 35.96C217.18 35.96 219.98 37.75 220.09 41.18L219.96 41.31H217.08L216.95 41.18C216.92 39.69 215.59 38.64 213.74 38.64C211.89 38.64 210.5 39.63 210.5 41.29C210.5 45.59 220.29 42.08 220.29 48.53C220.29 51.78 217.75 54.06 213.71 54.06C209.63 54.04 207.09 51.7 207.06 48.35Z" fill="currentColor"></path><path d="M225.17 53.4099V41.7399C225.17 40.1199 224.31 39.2299 222.69 39.2299H221.53L221.4 39.0999V36.6199L221.53 36.4899H225.03L225.16 36.3599V31.5399L225.29 31.4099H228.07L228.2 31.5399V36.3599L228.33 36.4899H232.43L232.56 36.6199V39.0999L232.43 39.2299H230.71C229.09 39.2299 228.2 40.1199 228.2 41.7399V48.3199C228.2 49.9399 229.09 50.7699 230.71 50.7699H232.43L232.56 50.8999V53.4099L232.43 53.5399H225.28L225.17 53.4099Z" fill="currentColor"></path><path d="M249.2 36.58V53.41L249.07 53.54H235.52L235.39 53.41V36.58L235.52 36.45H238.3L238.43 36.58V47.88C238.43 49.71 239.42 50.7299 241.24 50.7299H243.35C245.21 50.7299 246.19 49.71 246.19 47.88V36.58L246.32 36.45H249.07L249.21 36.58H249.2Z" fill="currentColor"></path><path d="M252.37 44.9799C252.37 40.1899 255.02 36.4499 260.37 36.4499H264.93L265.06 36.3199V30.5399L265.19 30.4099H267.94L268.07 30.5399V53.4199L267.94 53.5499H260.37C255.02 53.5499 252.37 49.7799 252.37 44.9899M260.37 50.5799C263.35 50.5799 265.19 48.3699 265.19 45.0199C265.19 41.6699 263.33 39.4299 260.37 39.4299C257.41 39.4299 255.51 41.6399 255.51 45.0199C255.52 48.3599 257.37 50.5799 260.37 50.5799Z" fill="currentColor"></path><path d="M272.26 30.5299L272.39 30.3999H275.33L275.46 30.5299V34.2299L275.33 34.3599H272.39L272.26 34.2299V30.5299ZM272.36 53.4099V36.5799L272.49 36.4499H275.24L275.37 36.5799V53.4099L275.24 53.5399H272.49L272.36 53.4099Z" fill="currentColor"></path><path d="M278.54 45.02C278.54 39.76 281.59 35.99 286.71 35.99C291.83 35.99 294.85 39.73 294.85 45.02C294.85 50.31 291.8 54.05 286.71 54.05C281.58 54.05 278.54 50.31 278.54 45.02ZM286.71 51.06C289.62 51.06 291.74 48.78 291.74 45.01C291.74 41.24 289.63 38.93 286.71 38.93C283.79 38.93 281.65 41.18 281.65 45.01C281.65 48.84 283.76 51.06 286.71 51.06Z" fill="currentColor"></path></g><defs><clipPath id="rsclip"><rect width="294.85" height="84.45" fill="currentColor"></rect></clipPath></defs></g>
+  </defs>
+</svg>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
+<!-- ================================================================ HERO -->
+<header class="hero">
+  <div class="hero-media">
+    <video id="heroVid" src="img/guerlain-cube.mp4" poster="img/guerlain-poster.jpg"
+           autoplay muted loop playsinline preload="metadata"
+           aria-label="Il cubo all'aperto nel cortile di un palazzo milanese, e poi il suo interno con le tre pareti LED accese e il soffitto a specchio."></video>
+    <div class="hero-veil"></div>
+  </div>
+
+  <div class="hero-top">
+    <div class="marks">
+      <span class="marks-lab">Powered by</span>
+      <span class="marks-row">
+        <img src="img/logo-targetdue.png" alt="Target Due">
+        <span class="x" aria-hidden="true"></span>
+        <svg viewBox="0 0 295 85" role="img" aria-label="Record Studio"><use href="#rs-mark"></use></svg>
+      </span>
+    </div>
+    <a class="label hero-cta" href="#sec-close">Parliamone <i aria-hidden="true">↓</i></a>
+  </div>
+
+  <div class="hero-in">
+    <p class="label sig rv">Immersive room</p>
+    <h1 class="wordmark" id="wm">The Cube</h1>
+    <p class="hero-sub rv">Tre pareti LED a passo 1,5. Sotto e sopra, due specchi. Chi entra smette di guardare un'immagine e ci finisce dentro — e quando esce, quello che si porta via non è il video: è l'essere stato lì.</p>
+    <div class="meta rv">
+      <span>Due formati</span><span>Tre livelli</span><span>Indoor &amp; outdoor</span><span>Brandizzabile fuori</span><span>A noleggio</span>
+    </div>
+    <div class="scrollcue rv"><i></i>Scorri</div>
+  </div>
+</header>
+
+<!-- =========================================================== MANIFESTO -->
+<section class="sec" id="sec-manifesto">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">01 — Che cos'è</p>
+      <h2 class="lines">Uno schermo lo guardi.<br>Qui ci resti dentro.</h2>
+    </div>
+    <div class="cols rv-c">
+      <div class="prose">
+        <p class="lede">Ci sono due minuti, in una fiera o in un flagship, in cui una persona smette di scorrere il telefono e alza gli occhi. The Cube esiste per quei due minuti.</p>
+        <p>Si entra da una parete cieca e ci si ritrova chiusi dentro l'immagine: davanti, a sinistra, a destra. Sotto i piedi e sopra la testa ci sono due specchi, e la stanza smette di avere un fondo. Nessuno, la prima volta, guarda avanti: <strong>guardano tutti in basso.</strong></p>
+        <p>Poi arriva il suono, che non viene da una cassa ma da intorno. Poi cambia l'aria, perché un'essenza entra insieme al video. Alla fine si esce, si cerca qualcuno e gli si dice sempre la stessa frase: <em class="q">«devi entrarci».</em></p>
+      </div>
+      <div class="prose">
+        <p><strong>È lì che sta il ritorno.</strong> Un totem si guarda e si dimentica prima di girare l'angolo. Una stanza in cui sei stato dentro resta: nella testa di chi ci è entrato, e nel racconto che ne fa agli altri per settimane.</p>
+        <p>E non è un'installazione su misura da riprogettare ogni volta, con tre mesi di ingegnerizzazione e un rischio tutto tuo. È <strong>un prodotto</strong>: due formati, tre livelli di esperienza, un montaggio già provato, squadre che l'hanno già fatto.</p>
+        <p class="note">Struttura, ledwall, specchi, audio, sensori, montaggio e presidio: Target Due. Concept, regia, produzione video, sound design e materiale social: Record Studio. Un solo referente, un solo preventivo, una sola persona da chiamare se alle sette di sera qualcosa non parte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== IL CUBO — STAGE THREE.JS -->
+<section class="build" id="build">
+  <div class="build-pin">
+    <div class="stage" id="cubeStage"></div>
+    <img class="build-fallback" id="cubeFallback" src="img/hero.jpg" hidden
+         alt="Interno del cubo: le pareti LED mostrano una cattedrale, il pavimento e il soffitto a specchio la ripetono sopra e sotto.">
+    <div class="build-ui">
+      <div class="build-top">
+        <p class="label n">02 — Come è fatto</p>
+        <h2 class="lines">Centocinque pezzi.<br>Poi non finisce più.</h2>
+      </div>
+
+      <ol class="beats" id="beats">
+        <li><span class="bn">01</span><span class="bt">Il volume</span><span class="bd">Tre metri e mezzo di lato, due e mezzo d'altezza. Per ora è solo aria quotata.</span></li>
+        <li><span class="bn">02</span><span class="bt">Lo specchio a terra</span><span class="bd">Entra per primo. È il pezzo che raddoppierà tutto quello che arriva dopo.</span></li>
+        <li><span class="bn">03</span><span class="bt">Centocinque cabinet</span><span class="bd">Si montano uno a uno, cinquanta per cinquanta: sette in larghezza, cinque in altezza, per tre pareti.</span></li>
+        <li><span class="bn">04</span><span class="bt">Lo specchio a soffitto</span><span class="bd">Chiude sopra. I due specchi si guardano, e il volume comincia a ripetersi.</span></li>
+        <li><span class="bn">05</span><span class="bt">Si accende</span><span class="bd">Le pareti partono a ondate e la stanza perde il fondo, sopra e sotto, finché la luce non si esaurisce.</span></li>
+      </ol>
+
+      <div class="build-bot">
+        <p class="build-cap">Modello tridimensionale ricostruito in codice, in scala reale sul formato Origin e sul modulo cabinet da 500 mm. È una rappresentazione dell'oggetto, non una ripresa: le fotografie vere sono più avanti.</p>
+        <div class="counter" aria-hidden="true"><span class="cv num" id="cabCount">0</span><span class="ck">cabinet<br>montati</span></div>
+      </div>
+    </div>
+    <div class="build-scrub" aria-hidden="true"><i id="buildScrub"></i></div>
+  </div>
+</section>
+
+<section class="sec" style="padding-block:clamp(56px,7vw,96px)">
+  <div class="wrap">
+    <div class="prose rv" style="max-width:70ch">
+      <p class="lede">Il volume percepito non è quello costruito.</p>
+      <p>I due specchi orizzontali si rimandano le tre pareti l'uno nell'altro, e la stanza si ripete verso l'alto e verso il basso finché la luce non si esaurisce. In pianta occupi dodici metri quadri — quelli che paghi di suolo in fiera. <strong>Quello che la gente racconta di aver visto è una cosa senza fondo.</strong></p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ============================================================= IL PASSO -->
+<section class="sec" id="sec-passo">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">03 — La differenza che nessuno scrive in offerta</p>
+      <h2 class="lines">A quaranta centimetri<br>non puoi barare.</h2>
+      <div class="prose rv"><p class="lede">Dentro un cubo la gente non sta a sei metri dallo schermo. Ci appoggia quasi il naso. È per questo che qui montiamo solo passo 1,5 e 1,9 millimetri.</p></div>
+    </div>
+
+    <figure class="rv" style="margin:0 0 clamp(26px,3.4vw,44px);display:flex;flex-direction:column;gap:14px">
+      <div class="pitch" id="pitch">
+        <div class="pitch-img">
+          <div class="pitch-layer pitch-fine">
+            <img src="img/ukraine.jpg" alt="Dettaglio della parete di fondo a passo 1,5: nessuna trama visibile, l'immagine è continua come una stampa.">
+          </div>
+          <div class="pitch-layer pitch-coarse" id="pitchCoarse">
+            <img src="img/ukraine.jpg" alt="La stessa parete simulata a passo 3,9: alla stessa distanza la griglia dei pixel diventa visibile.">
+          </div>
+          <div class="pitch-split" id="pitchSplit"></div>
+          <span class="pitch-tag l">Passo 1,5 · quello che montiamo</span>
+          <span class="pitch-tag r">Passo 3,9 · quello che trovi in fiera</span>
+          <input class="pitch-range" id="pitchRange" type="range" min="0" max="100" value="50" step="0.5"
+                 aria-label="Confronto fra passo 1,5 e passo 3,9: trascina per scoprire la metà destra">
+        </div>
+      </div>
+      <figcaption class="note" style="border:0;padding:0;max-width:78ch">Trascina la maniglia. A sinistra il passo 1,5 alla distanza a cui sta davvero chi è dentro: <b style="color:var(--slate-hi);font-weight:550">non c'è trama da vedere.</b> I diodi sono così fitti e la superficie così chiusa che il nero fra un pixel e l'altro sparisce, e quello che resta è un'immagine continua, come una stampa. A destra, alla stessa distanza, il passo che si usa normalmente in fiera. L'incanto finisce nell'istante esatto in cui la persona si avvicina — cioè subito, perché dentro un cubo tutti si avvicinano.</figcaption>
+    </figure>
+
+    <div class="stats rv">
+      <div class="stat"><span class="v num">1,5</span><span class="k">Passo pixel, mm</span></div>
+      <div class="stat"><span class="v num">11,7</span><span class="k">Origin · tre pareti, milioni di pixel</span></div>
+      <div class="stat sig"><span class="v num">18</span><span class="k">Grand · tre pareti, milioni di pixel</span></div>
+      <div class="stat ref"><span class="v num">8,3</span><span class="k">Per confronto: un cinema 4K</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== ORIGIN E GRAND -->
+<section class="sec lite" id="sec-formati">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">04 — I due formati</p>
+      <h2 class="lines">Origin e Grand</h2>
+      <div class="prose rv"><p>Stessa anatomia, due taglie. La scelta si fa su due cose sole: quanto spazio c'è, e quante persone devono starci dentro insieme senza toccarsi.</p></div>
+    </div>
+
+    <div class="cfg rv">
+      <figure class="cfg-stage" style="margin:0">
+        <div class="stage" id="fmtStage" role="img"
+             aria-label="Modello tridimensionale del cubo nel formato scelto, con dentro una persona alta 175 centimetri. Si gira trascinando o con le frecce della tastiera; girandolo fino ad affacciarsi sull'apertura le tre pareti si accendono."></div>
+        <img class="cfg-fallback" id="fmtFallback" src="img/visitatori.jpg" hidden alt="Due visitatori in piedi dentro il cubo danno la misura del volume.">
+        <p class="cfg-hint" id="cfgHint">Trascina per girare — affacciati e si accende</p>
+        <div class="cfg-ctl">
+          <button type="button" data-rot="1" aria-label="Ruota il cubo verso sinistra">
+            <svg viewBox="0 0 16 16" aria-hidden="true" width="14" height="14"><path d="M10.5 2.5 5 8l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+          <button type="button" data-rot="-1" aria-label="Ruota il cubo verso destra">
+            <svg viewBox="0 0 16 16" aria-hidden="true" width="14" height="14"><path d="M5.5 2.5 11 8l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+        </div>
+      </figure>
+
+      <div class="cfg-side">
+        <div class="seg" role="group" aria-label="Scegli il formato">
+          <button type="button" class="on" data-s="origin" aria-pressed="true">Origin</button>
+          <button type="button" data-s="grand" aria-pressed="false">Grand</button>
+        </div>
+        <p class="cfg-lede" id="cfgLede">Tre metri e mezzo di lato, due e mezzo d'altezza. Sette cabinet in larghezza, cinque in altezza: il modulo da 500 torna esatto, senza un pannello tagliato.</p>
+        <dl class="cfg-stats" id="cfgStats">
+          <div><dt>Parete</dt><dd data-k="parete">350 × 250 cm</dd></div>
+          <div><dt>Pianta</dt><dd data-k="pianta">350 × 350 cm</dd></div>
+          <div><dt>Superficie LED</dt><dd data-k="led">26,25 m²</dd></div>
+          <div><dt>Cabinet 500 × 500</dt><dd data-k="cab">105</dd></div>
+          <div><dt>Moduli parete</dt><dd data-k="mod">7 × 5</dd></div>
+          <div><dt>Capienza</dt><dd data-k="cap">6–8 persone</dd></div>
+        </dl>
+        <p class="note">La sagoma resta alta 175 cm e non cambia mai: cresce il cubo intorno. Passando a Grand si aggiunge <b>una colonna di cabinet per lato e una fila sopra</b> — da 105 pezzi a 162, stesso modulo, nessun pannello tagliato, un magazzino solo.</p>
+      </div>
+    </div>
+
+    <div class="cols rv-c" style="margin-top:clamp(34px,4.5vw,60px)">
+      <div class="prose">
+        <p class="h4" style="margin-bottom:12px">Origin — il formato che entra ovunque</p>
+        <p>Occupa quanto una sala riunioni piccola, e si infila dove c'è posto: stand di medie dimensioni, atrio direzionale, showroom, cortile. Non ti obbliga a ridisegnare l'allestimento intorno. A parità di effetto è la taglia che costa meno di suolo, e in fiera il suolo è l'unica voce che non si tratta.</p>
+      </div>
+      <div class="prose">
+        <p class="h4" style="margin-bottom:12px">Grand — il formato che ferma il padiglione</p>
+        <p>Un metro in più per lato e mezzo in più d'altezza non sono un aggiornamento: sono un'altra cosa. Si entra in gruppo, la parete di fondo passa sopra la testa, e gli specchi hanno finalmente la quota per andare a fondo davvero. È la taglia che in un padiglione si vede dall'ingresso e fa cambiare traiettoria alla gente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= PELLE ESTERNA -->
+<section class="sec" id="sec-pelle">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">05 — La pelle esterna</p>
+      <h2 class="lines">Dentro è un'esperienza.<br>Fuori è la tua insegna.</h2>
+      <div class="prose rv">
+        <p class="lede">Le pareti esterne sono una superficie piena, alta due metri e mezzo, piantata in mezzo al passaggio. Non la lasciamo nera: si veste come vuoi tu.</p>
+        <p>Stampa diretta, vinile, laccatura a campione colore, tessuto teso, logo retroilluminato, materiali a specchio o effetto metallo — e, se il progetto lo chiede, LED anche fuori, così il cubo chiama da lontano e poi si apre.</p>
+      </div>
+    </div>
+    <div class="skins rv-c">
+      <figure class="skin">
+        <img src="img/guerlain.jpg" loading="lazy" alt="Il cubo rivestito in blu notte con il logotipo Guerlain centrato sulla parete cieca.">
+        <figcaption>Blu notte, logotipo centrato<i>Guerlain — Milano</i></figcaption>
+      </figure>
+      <figure class="skin">
+        <img src="img/pelle-ey.jpg" loading="lazy" alt="Il cubo EY nel padiglione fieristico, rivestito in viola di marca, con i totem d'ingresso e le transenne della coda.">
+        <figcaption>Viola di marca, totem e coda all'ingresso<i>EY — Ecomondo, Rimini</i></figcaption>
+      </figure>
+      <figure class="skin">
+        <img src="img/pelle-ucraina.jpg" loading="lazy" alt="La parete esterna nera del cubo con il titolo della mostra a caratteri grandi, nell'atrio del centro congressi.">
+        <figcaption>Nero, titolo grande come una porta<i>Ukraine Recovery Conference — Roma</i></figcaption>
+      </figure>
+    </div>
+    <p class="note rv" style="margin-top:22px">Stesso oggetto, tre volte irriconoscibile. È la parte che i clienti sottovalutano al primo incontro e che diventa la prima cosa di cui parlano al secondo.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ========================================================= TRE LIVELLI -->
+<section class="sec" id="sec-livelli">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">06 — Tre livelli di esperienza</p>
+      <h2 class="lines">Si guarda.<br>Si tocca. Si parla.</h2>
+      <div class="prose rv"><p>Scelto il formato, resta una domanda sola: quanto deve rispondere. I tre livelli sono una progressione vera — ognuno contiene per intero quello sotto, e aggiunge un senso in più con cui il pubblico entra nel contenuto.</p></div>
+    </div>
+
+    <div class="lv rv-c">
+      <article class="lv-c">
+        <div class="lv-h"><span class="n">01</span><span class="t">Base</span><span class="s">Il racconto</span></div>
+        <p>Il cubo acceso e il suo film. Si entra, parte, finisce, si esce. Nessun comando da imparare, nessuno steward da formare: il livello giusto quando quello che conta è il flusso di gente e il ricordo che se ne porta via.</p>
+      </article>
+      <article class="lv-c">
+        <div class="lv-h"><span class="n">02</span><span class="t">Medio</span><span class="s">I sensi</span></div>
+        <p>Il cubo smette di essere uno schermo e diventa un ambiente. L'audio passa in surround e l'aria cambia: un vaporizzatore comandato in DMX porta dentro un'essenza, e l'essenza cambia insieme al video. Da iPad si decide cosa far vedere, sentire e respirare.</p>
+      </article>
+      <article class="lv-c sig">
+        <div class="lv-h"><span class="n">03</span><span class="t">Pro</span><span class="s">Il dialogo</span></div>
+        <p>Qui il cubo risponde. Sensori e un sistema di intelligenza artificiale con cui si parla a voce; un prodotto fisico appoggiato dentro diventa un comando. L'ospite smette di essere pubblico e comincia a condurre: <strong>gli stai lasciando la regia per due minuti.</strong></p>
+      </article>
+    </div>
+
+    <div class="tw rv" style="margin-top:clamp(20px,2.4vw,30px)">
+      <table>
+        <thead>
+          <tr><th scope="col">&nbsp;</th><th scope="col">01 · Base</th><th scope="col">02 · Medio</th><th scope="col" class="on">03 · Pro</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Cubo LED passo 1,5 / 1,9</th><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr>
+          <tr><th scope="row">Pelle esterna personalizzata</th><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr>
+          <tr><th scope="row">Audio</th><td>Stereo</td><td>Surround</td><td>Surround</td></tr>
+          <tr><th scope="row">Lancio contenuti da iPad</th><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr>
+          <tr><th scope="row">Essenze comandate in DMX</th><td class="no">—</td><td class="y">●</td><td class="y">●</td></tr>
+          <tr><th scope="row">Regia dei contenuti in tempo reale</th><td class="no">—</td><td>da iPad</td><td>da iPad e a voce</td></tr>
+          <tr><th scope="row">Sistema IA conversazionale</th><td class="no">—</td><td class="no">—</td><td class="y">●</td></tr>
+          <tr><th scope="row">Prodotto fisico come comando</th><td class="no">—</td><td class="no">—</td><td class="y">●</td></tr>
+          <tr><th scope="row">LED reattivo (TouchDesigner)</th><td class="no">—</td><td class="no">—</td><td>opzione</td></tr>
+          <tr><th scope="row">Video prodotti</th><td>1 × 90–120&Prime;</td><td>loop + 2 × 120&Prime;</td><td>loop + 4 × 120&Prime;</td></tr>
+          <tr><th scope="row">Reel e materiale social</th><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="pull">
+  <div class="wrap">
+    <p class="rv">Il contenuto giusto non riempie le tre pareti. <em>Le usa.</em></p>
+  </div>
+</section>
+
+<!-- ========================================================= I CONTENUTI -->
+<section class="sec" id="sec-contenuti">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">07 — I contenuti</p>
+      <h2 class="lines">Non un format.<br>La tua idea, girata bene.</h2>
+      <div class="prose rv"><p class="lede">Qui non arriva un video di repertorio con il logo appiccicato in coda. Si parte da quello che hai in testa — il prodotto che stai lanciando, la campagna in corso, l'archivio che nessuno ha mai digitalizzato — e da lì si scrive, si gira e si monta.</p><p>Il contenuto lo firma Record Studio, che di mestiere fa esattamente questo: <em class="q">designing, capturing and telling emotions</em>. Quattro registri, uno per ogni modo in cui una marca può usare due minuti di attenzione indivisa.</p></div>
+    </div>
+
+    <figure class="unroll rv">
+      <svg viewBox="-34 -118 1118 540" role="img"
+           aria-label="Le tre pareti svolte in piano formano una striscia da 1050 per 250 centimetri, larga più di quattro volte la sua altezza. Un fotogramma 16:9 alla stessa altezza copre appena la parete di fondo e sborda sulle laterali. Sotto, lo specchio ripete la metà bassa dell'immagine.">
+        <defs>
+          <linearGradient id="urFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FF8B00" stop-opacity=".24"></stop>
+            <stop offset="1" stop-color="#FF8B00" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+
+        <!-- striscia svolta: sinistra | fondo | destra -->
+        <g class="ur-panels">
+          <rect x="0"   y="0" width="350" height="250"></rect>
+          <rect x="350" y="0" width="350" height="250" class="ur-hero"></rect>
+          <rect x="700" y="0" width="350" height="250"></rect>
+        </g>
+        <path class="ur-grid" id="urGrid"></path>
+        <g class="ur-fold">
+          <path d="M350 -14V264M700 -14V264"></path>
+        </g>
+
+        <!-- il 16:9, alla stessa altezza -->
+        <rect class="ur-169" x="302" y="0" width="444" height="250"></rect>
+        <text class="ur-t169" x="524" y="-32" text-anchor="middle">un 16 : 9, alla stessa altezza</text>
+        <path class="ur-lead" d="M524 -24V6"></path>
+
+        <!-- riflesso a specchio -->
+        <g class="ur-mirror">
+          <rect x="0" y="300" width="1050" height="96"></rect>
+          <text class="ur-cap" x="525" y="412" text-anchor="middle">lo specchio raddoppia tutto quello che metti nella metà bassa</text>
+        </g>
+
+        <!-- etichette -->
+        <text class="ur-lab" x="175" y="284" text-anchor="middle">Sinistra · periferia</text>
+        <text class="ur-lab on" x="525" y="284" text-anchor="middle">Fondo · centro scenico</text>
+        <text class="ur-lab" x="875" y="284" text-anchor="middle">Destra · periferia</text>
+
+        <!-- quote -->
+        <g class="ur-dim">
+          <path d="M0 -74h1050M0 -80v12M1050 -80v12"></path>
+        </g>
+        <text class="ur-dimt" x="525" y="-86" text-anchor="middle">1050 cm di immagine continua · 250 di altezza</text>
+      </svg>
+      <figcaption>Le tre pareti svolte in piano. <b>Non è un 16:9 largo: è un altro formato.</b> Il centro scenico sta sulla parete di fondo, ai lati la periferia dell'occhio va riempita e non raccontata, e la metà bassa torna doppia perché il pavimento la ripete. Si scrive e si gira per il volume, non per il rettangolo.</figcaption>
+    </figure>
+
+    <div class="regs rv-c">
+      <div class="reg"><span class="rk">Commercial</span><p>Lo spot. Ritmo, prodotto, chiusura. È il registro in cui il cubo fa da sala di proiezione privata: due minuti e la persona esce con il film addosso.</p></div>
+      <div class="reg"><span class="rk">Advertising campaign</span><p>Il contenuto nasce dentro la campagna che hai già in corso: stessa direzione artistica, stesso casting, stessa luce. Il cubo diventa il posto in cui la campagna si attraversa invece di guardarla.</p></div>
+      <div class="reg"><span class="rk">Storytelling</span><p>Il racconto lungo: un'azienda, un archivio, un processo produttivo, una storia di famiglia. È il registro dei musei d'impresa e delle mostre — quello che a Roma ha retto una conferenza internazionale.</p></div>
+      <div class="reg"><span class="rk">Social</span><p>I verticali e i reel, girati nello stesso set e nella stessa giornata. Non una seconda produzione: una seconda uscita dello stesso materiale.</p></div>
+    </div>
+
+    <div class="cols rv-c" style="margin-top:clamp(30px,4vw,52px);align-items:start">
+      <div class="prose">
+        <p class="h4" style="margin-bottom:12px">Come si scrive</p>
+        <p>Si parte da una cosa sola che deve restare in testa a chi esce. Intorno a quella si costruisce: sceneggiatura, casting, scelta delle location, direzione della fotografia. La scrittura tiene conto del fatto che lo spettatore <strong>non può distogliere lo sguardo</strong> — non c'è una cornice da cui uscire, e questo cambia la durata delle inquadrature.</p>
+      </div>
+      <div class="prose">
+        <p class="h4" style="margin-bottom:12px">Come si gira</p>
+        <p>Fotografia cinematografica, non ripresa d'evento: ottiche, luce costruita, movimenti macchina progettati per il volume. Al montaggio si lavora sulla striscia intera, non sul rettangolo, e il sound design nasce insieme all'immagine perché dentro il cubo arriva da tutte le direzioni.</p>
+      </div>
+      <div class="prose">
+        <p class="h4" style="margin-bottom:12px">Cosa resta a te</p>
+        <p>Il master per il cubo, i verticali per i social, gli still per la stampa. Consegnati, riutilizzabili, tuoi anche dopo. La libreria si aggiorna nel corso del contratto: a ogni collezione, a ogni stagione, a ogni campagna.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== SHOWREEL RECORD STUDIO -->
+<section class="band">
+  <figure class="band-media">
+    <video class="lazyvid" data-src="img/record-reel-hd.mp4" poster="img/reel-poster.jpg" muted loop playsinline preload="none"
+           aria-label="Montaggio di sequenze cinematografiche: moda, lusso, arredo, ritratti e still life."></video>
+    <div class="band-veil"></div>
+    <figcaption class="band-cap">
+      <p class="label sig">Chi lo gira</p>
+      <h2 class="lines">Girato per marchi<br>che non perdonano</h2>
+      <p class="band-txt">Tiffany &amp; Co al Festival di Venezia, Hermès, Versace, Villa d'Este, i settant'anni di Pianca. È la troupe che entra nel cubo: stessa regia, stessa luce, stesso montaggio. <strong>Quello che gira sulle tre pareti non è un filmato di repertorio con il logo in coda.</strong></p>
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ======================================================= BANDA MARCHI -->
+<section class="trust" id="sec-marchi">
+  <div class="wrap">
+    <div class="trust-head">
+      <p class="label n rv">Chi ci ha già chiamati</p>
+      <button class="tk-pause" id="tkPause" type="button" aria-pressed="false" aria-controls="tk">Ferma lo scorrimento</button>
+    </div>
+  </div>
+  <div class="tk" id="tk">
+    <div class="tk-track" id="tkTrack" role="list" aria-label="Marchi per cui Target Due o Record Studio hanno lavorato">
+      <span class="tki" role="listitem"><img src="img/loghi/versace.svg" alt="Versace" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/tiffany.svg" alt="Tiffany & Co." loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/hermes.svg" alt="Hermès" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/armani.svg" alt="Giorgio Armani" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/louis-vuitton.svg" alt="Louis Vuitton" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/dior.svg" alt="Dior" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/ferragamo.svg" alt="Salvatore Ferragamo" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/guerlain.svg" alt="Guerlain" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/philipp-plein.png" alt="Philipp Plein" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/poltrona-frau.png" alt="Poltrona Frau" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/diadora.svg" alt="Diadora" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/santoni.svg" alt="Santoni" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/ovs.svg" alt="OVS" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/ey.svg" alt="EY (Ernst & Young)" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/pirelli.svg" alt="Pirelli" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/ferrari.svg" alt="Ferrari" loading="lazy" decoding="async"></span>
+      <span class="tki" role="listitem"><img src="img/loghi/stevanato.png" alt="Stevanato Group" loading="lazy" decoding="async"></span>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="note rv">Lavori realizzati da Target Due o da Record Studio, anche in ambiti diversi da The Cube. L'elenco è parziale.</p>
+  </div>
+</section>
+
+<!-- ============================================================== I CASI -->
+<section class="sec lite" id="sec-casi">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">08 — Non è un render</p>
+      <h2 class="lines">Cinque lavori.<br>Tutti accesi davvero.</h2>
+      <div class="prose rv"><p>Le immagini di questa pagina sono fotografie e riprese di installazioni reali, non simulazioni. È la ragione per cui le mostriamo: l'effetto specchio in un rendering viene sempre benissimo, e dal vero quasi mai — a meno di averlo già fatto. I primi quattro sono cubi. L'ultimo è la sala da cui il cubo è nato.</p></div>
+    </div>
+
+    <div class="cases rv-c">
+      <figure class="case big">
+        <video src="img/marchiol-cubo.mp4" poster="img/marchiol-poster.jpg" muted loop playsinline preload="metadata"
+               aria-label="Dentro il cubo: alcune persone di spalle guardano una città notturna che scorre sulle tre pareti LED."></video>
+        <figcaption>
+          <p class="case-m">Elettroexpo, Pordenone — settembre 2026</p>
+          <h3>Marchiol &middot; Cubo Immersivo</h3>
+          <p>Un distributore di materiale elettrico che a una fiera di settore deve vendere una cosa che non si può mettere in vetrina: la luce. Il cubo l'ha resa un viaggio — sopra una città di notte dalla cabina di un aereo, in orbita, sott'acqua, fra le piramidi e dentro il Colosseo — con una frase sola a tenere il filo: <em class="q">&laquo;when the world moves, light moves with it&raquo;</em>.</p>
+          <p class="kick">È il caso che dimostra il formato fuori dal lusso e fuori dalla cultura: un pubblico tecnico, in una fiera di settore, che resta fermo due minuti dentro una scatola a guardare la luce.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="case sml">
+        <img src="img/ukraine.jpg" loading="lazy" alt="Interno del cubo: la cupola di una chiesa barocca su un cielo di nuvole occupa la parete di fondo, le statue corrono sulle pareti laterali e lo specchio la ripete sopra e sotto.">
+        <figcaption>
+          <p class="case-m">La Nuvola, Roma — luglio 2025</p>
+          <h3>Ukraine Recovery Conference</h3>
+          <p>La mostra immersiva allestita dentro la conferenza internazionale per la ricostruzione: chiese, navate e palazzi ucraini rilevati in 3D, prima com'erano e poi come sono adesso. Visitata dalle delegazioni ufficiali.</p>
+          <p class="kick">È il lavoro che dimostra che il formato regge un contenuto serio: in un contesto istituzionale ha fatto il mestiere del museo.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="case sml">
+        <img src="img/visitatori.jpg" loading="lazy" alt="Due visitatori in piedi dentro il cubo guardano un paesaggio di serre che avvolge tre pareti e si riflette sul pavimento.">
+        <figcaption>
+          <p class="case-m">Ecomondo, Rimini — novembre 2025</p>
+          <h3>EY · The Immersive Cube</h3>
+          <p>Cubo all'ingresso dello spazio in fiera, ingressi a turni e coda gestita da hostess. Dentro, tre minuti su dati, tracciabilità e intelligenza artificiale, in loop dall'apertura alla chiusura dei padiglioni.</p>
+          <p class="kick">Il caso d'uso fieristico puro: in quattro giorni il ciclo si ripete qualche centinaio di volte, e ogni giro è un contatto che resta in piedi due minuti invece di passare oltre.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="case big">
+        <img src="img/guerlain.jpg" loading="lazy" alt="Il volume chiuso del cubo Guerlain visto dall'esterno nel cortile, con il marchio sulla parete cieca.">
+        <figcaption>
+          <p class="case-m">Cortile di palazzo, Milano — settembre 2026</p>
+          <h3>Guerlain · L'Heure Bleue</h3>
+          <p>Serata di presentazione all'aperto, colonnato intorno e ospiti in piedi. Il cubo ha fatto il mestiere opposto a quello della fiera: non attirare folla, ma ritagliare per il marchio una stanza propria dentro un evento affollato.</p>
+          <p class="kick">È anche la prova della versione outdoor, in un cortile storico dove non si fora niente: tutto a zavorra, montato nel pomeriggio e smontato nella notte.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="case wide">
+        <img src="img/glo-dentro-hd.jpg" loading="lazy" alt="Visitatori dentro la sala GLO: pareti e soffitto a LED con contenuto iridescente, pavimento a specchio che raddoppia tutto, qualcuno che fotografa.">
+        <figcaption>
+          <p class="case-m">Galleria del Corso, Milano — 2025</p>
+          <h3>GLO for Art · Il fratello grande</h3>
+          <p>Una galleria storica milanese chiusa e rivestita di LED su tutti i lati, soffitto compreso, con pavimento a specchio e contenuto generativo che non si ripete mai uguale. Non è The Cube: è la versione senza limiti di budget, e il lavoro da cui abbiamo capito che cosa rende davvero l'effetto.</p>
+          <p class="kick">Non sono i metri quadri. È la chiusura del campo visivo, il passo fine e la coppia di specchi. Tolte quelle tre cose, resta uno schermo grande. Messe insieme in dodici metri quadri, resta The Cube.</p>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================== IL NOLEGGIO -->
+<section class="sec" id="sec-noleggio">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">09 — Come si prende</p>
+      <h2 class="lines">Si noleggia.<br>E alla fine, se serve, si compra.</h2>
+      <div class="prose rv"><p class="lede">The Cube nasce a noleggio, perché è così che si usa davvero: una fiera, un lancio, una stagione di showroom.</p><p>Nessuno immobilizza capitale per una cosa che deve ancora dimostrare quanto vale. Ma chi se lo tiene addosso per un anno, di solito, non lo rende — e allora è giusto che i canoni già pagati valgano qualcosa il giorno in cui decide di tenerselo.</p></div>
+    </div>
+
+    <div class="ladder rv-c">
+      <div class="rung">
+        <span class="w">A periodo</span>
+        <span class="t">Evento e fiera</span>
+        <p>A giornata o per la durata della manifestazione. Trasporto, montaggio, taratura, presidio tecnico nei giorni di apertura e smontaggio: tutto dentro.</p>
+      </div>
+      <div class="rung">
+        <span class="w">12 mesi</span>
+        <span class="t">Canone annuale</span>
+        <p>Il cubo resta dov'è — showroom, flagship, atrio, museo d'impresa — con un canone mensile. I contenuti si rinnovano a ogni collezione, stagione, campagna.</p>
+      </div>
+      <div class="rung">
+        <span class="w">+ 12 mesi</span>
+        <span class="t">Rinnovo a 24</span>
+        <p>Alla scadenza il contratto si rinnova a condizioni migliori: l'impianto è già montato e collaudato, resta il servizio sui contenuti e la manutenzione.</p>
+      </div>
+      <div class="rung sig">
+        <span class="w">A fine periodo</span>
+        <span class="t">Riscatto d'acquisto</span>
+        <p>Chi vuole tenerlo lo riscatta, e parte di quanto già versato si scala dal prezzo. Si decide alla fine, con l'impianto in funzione sotto gli occhi — non all'inizio, sulla fiducia.</p>
+      </div>
+    </div>
+
+    <p class="note rv" style="margin-top:24px">Canoni, durata del presidio e quota di riscatto si definiscono in offerta, sul formato scelto, sul livello di esperienza e sulla durata. Sopralluogo e verifica dei vincoli di sede — altezza libera, potenza disponibile, accesso mezzi — prima di qualunque numero.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- =========================================================== CHI LO FA -->
+<section class="sec" id="sec-chilofa">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="label n rv">10 — Chi risponde</p>
+      <h2 class="lines">Due aziende,<br>un referente solo</h2>
+      <div class="prose rv"><p class="lede">Fino a ieri una cosa così si comprava a pezzi: la tecnologia da uno, il film da un altro, e nessuno dei due che rispondesse del risultato finale.</p><p>The Cube arriva sullo stesso camion. <strong>Un preventivo solo, un referente solo, una persona sola da chiamare se alle sette di sera qualcosa non parte.</strong></p></div>
+    </div>
+
+    <div class="cols rv-c">
+      <article class="house">
+        <div class="house-mark"><img src="img/logo-targetdue.png" alt="Target Due"></div>
+        <p class="roles"><b>Porta la stanza.</b> Struttura e ledwall, i due specchi, la pelle esterna, l'impianto audio, la sensoristica, il trasporto e il montaggio, la taratura, il presidio tecnico nei giorni di apertura e la manutenzione.</p>
+      </article>
+      <article class="house">
+        <div class="house-mark"><svg viewBox="0 0 295 85" role="img" aria-label="Record Studio"><use href="#rs-mark"></use></svg></div>
+        <p class="roles"><b>Porta quello che ci gira dentro.</b> Concept e sceneggiatura, regia, fotografia, produzione video sul volume, sound design, i contenuti per i social e l'aggiornamento della libreria stagione dopo stagione.</p>
+      </article>
+    </div>
+
+    <div class="prose rv" style="margin-top:clamp(28px,3.4vw,44px);max-width:72ch">
+      <p>La parte difficile di una cosa così non è l'idea. È portarla in un padiglione alle sei del mattino, farla accendere al primo colpo, tenerla in piedi quattro giorni di fila con ventimila persone che passano, e smontarla nella notte senza lasciare un graffio sul marmo di un cortile del Seicento. <strong>È lì che il cubo smette di essere un rendering.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CHIUSURA -->
+<section class="close" id="sec-close">
+  <div class="stage close-3d" id="closeStage" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="label sig rv">Parliamone</p>
+    <h2 class="lines" style="margin-top:18px">Dove lo<br>mettiamo?</h2>
+    <div class="prose rv" style="max-width:56ch;margin-top:clamp(22px,3vw,34px)">
+      <p>Servono tre informazioni per arrivare a un numero: dove va, per quanto tempo, e fin dove deve rispondere. Il resto lo verifichiamo noi, in sopralluogo.</p>
+      <p>Poi succede una cosa sola, e succede sempre: la prima persona che esce va a chiamare qualcun altro.</p>
+    </div>
+    <div class="contact rv">
+      <a href="mailto:giulio@targetdue.it">giulio@targetdue.it</a>
+      <a href="https://targetdue.it">targetdue.it</a>
+      <a href="https://recordstudio.it">recordstudio.it</a>
+    </div>
+    <div class="marks rv" style="margin-top:clamp(30px,4vw,48px)">
+      <span class="marks-lab">The Cube è</span>
+      <span class="marks-row">
+        <img src="img/logo-targetdue.png" alt="Target Due">
+        <span class="x" aria-hidden="true"></span>
+        <svg viewBox="0 0 295 85" role="img" aria-label="Record Studio"><use href="#rs-mark"></use></svg>
+      </span>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="foot">
+      <span>The Cube — Target Due S.r.l. × Record Studio S.r.l.</span>
+      <span>Documento commerciale · settembre 2026</span>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var REDUCED   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var HAS_GSAP  = !!(window.gsap && window.ScrollTrigger);
+  var HAS_THREE = !!window.THREE;
+  if (HAS_GSAP) gsap.registerPlugin(ScrollTrigger);
+
+  function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+  function sub(p,a,b){ return clamp((p-a)/(b-a),0,1); }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function easeIO(t){ return t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+  function easeOut(t){ return 1-Math.pow(1-t,3); }
+  function easeOut5(t){ return 1-Math.pow(1-t,5); }
+  function easeBack(t){ var c=1.34; return 1+ (c+1)*Math.pow(t-1,3) + c*Math.pow(t-1,2); }
+  function hash(i){ var x=Math.sin(i*127.1)*43758.5453; return x-Math.floor(x); }
+
+  /* =====================================================================
+     MOTORE DI DISEGNO CONDIVISO
+     Un solo requestAnimationFrame per tutta la pagina. Ogni scena si
+     iscrive e viene disegnata solo mentre è davvero a schermo.
+     ===================================================================== */
+  var actors = [], rafId = 0, prev = 0;
+  function frame(t){
+    var dt = prev ? Math.min((t-prev)/1000, 0.05) : 0.016;
+    prev = t;
+    var any = false;
+    for (var i=0;i<actors.length;i++){
+      if (actors[i].live){ any = true; actors[i].fn(dt, t/1000); }
+    }
+    rafId = any ? requestAnimationFrame(frame) : 0;
+    if (!any) prev = 0;
+  }
+  function wake(){ if (!rafId) rafId = requestAnimationFrame(frame); }
+  function actor(el, fn, margin){
+    var a = {live:false, fn:fn};
+    actors.push(a);
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){ a.live = e.isIntersecting; if (a.live) wake(); });
+      },{rootMargin: margin || '140px 0px'}).observe(el);
+    } else { a.live = true; wake(); }
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) wake(); });
+    return a;
+  }
+
+  function webgl(){
+    try { var c=document.createElement('canvas');
+          return !!(c.getContext('webgl')||c.getContext('experimental-webgl')); }
+    catch(e){ return false; }
+  }
+  var CAN3D = HAS_THREE && webgl();
+
+  /* =====================================================================
+     1. AVANZAMENTO E INDICE DI SEZIONE
+     ===================================================================== */
+  var sections = [];
+  (function(){
+    var bar = document.getElementById('prog');
+    var nav = document.createElement('nav');
+    nav.className = 'sidx'; nav.setAttribute('aria-label','Sezioni della pagina');
+
+    [].forEach.call(document.querySelectorAll('section[id], header.hero'), function(sec){
+      var lab = sec.querySelector('.label.n');
+      if (!lab && !sec.classList.contains('hero')) return;
+      var txt = lab ? lab.textContent : '00 — In apertura';
+      var m = /^\s*(\d+)\s*—\s*(.+)$/.exec(txt);
+      if (!sec.id) sec.id = 'sec-top';
+      sections.push({el:sec, n: m?m[1]:'00', t: m?m[2]:'In apertura'});
+    });
+
+    if (!sections.length) return;
+
+    sections.forEach(function(s){
+      var a = document.createElement('a');
+      a.href = '#' + s.el.id;
+      a.innerHTML = '<span>' + s.t + '</span><i></i>';
+      a.setAttribute('aria-label', s.n + ' ' + s.t);
+      nav.appendChild(a); s.link = a;
+    });
+    document.body.appendChild(nav);
+
+    var ticking = false, active = -1;
+    function upd(){
+      ticking = false;
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      if (bar) bar.style.width = (h>0 ? clamp(window.scrollY/h,0,1)*100 : 0).toFixed(2) + '%';
+      var mid = window.innerHeight * 0.42, found = 0;
+      for (var i=0;i<sections.length;i++){
+        if (sections[i].el.getBoundingClientRect().top <= mid) found = i;
+      }
+      if (found !== active && sections[found]){
+        if (active >= 0 && sections[active]) sections[active].link.classList.remove('on');
+        sections[found].link.classList.add('on');
+        nav.classList.toggle('onlite', sections[found].el.classList.contains('lite'));
+        active = found;
+      }
+    }
+    addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(upd); } }, {passive:true});
+    addEventListener('resize', upd);
+    upd();
+  })();
+
+  /* =====================================================================
+     2. TITOLI RIGA PER RIGA
+     ===================================================================== */
+  (function(){
+    var all = [].slice.call(document.querySelectorAll('h1.lines, h2.lines'));
+    if (!all.length) return;
+    all.forEach(function(h){
+      var parts = h.innerHTML.split(/<br\s*\/?>/i);
+      h.innerHTML = parts.map(function(t){ return '<span class="ln"><i>'+t+'</i></span>'; }).join('');
+    });
+    if (REDUCED || !('IntersectionObserver' in window)){
+      all.forEach(function(h){ [].forEach.call(h.querySelectorAll('.ln'), function(l){ l.classList.add('in'); }); });
+      return;
+    }
+    all.forEach(function(h){
+      [].forEach.call(h.querySelectorAll('.ln'), function(l, i){ l.style.transitionDelay = (i*0.09) + 's'; });
+    });
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        [].forEach.call(e.target.querySelectorAll('.ln'), function(l){ l.classList.add('in'); });
+      });
+    },{rootMargin:'0px 0px -8% 0px'});
+    all.forEach(function(h){ io.observe(h); });
+  })();
+
+  /* =====================================================================
+     3. RIVELAZIONI
+     ===================================================================== */
+  (function(){
+    var solos  = [].slice.call(document.querySelectorAll('.rv'));
+    var groups = [].slice.call(document.querySelectorAll('.rv-c'));
+    var all = solos.concat(groups);
+    if (!all.length) return;
+
+    if (REDUCED || !('IntersectionObserver' in window)){
+      solos.forEach(function(e){ e.style.opacity = 1; e.style.transform = 'none'; });
+      groups.forEach(function(g){ [].forEach.call(g.children, function(e){ e.style.opacity = 1; e.style.transform = 'none'; }); });
+      return;
+    }
+    groups.forEach(function(g){
+      [].forEach.call(g.children, function(e, i){ e.style.transitionDelay = (i*0.075) + 's'; });
+    });
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        e.target.classList.add('in');
+      });
+    },{rootMargin:'0px 0px -8% 0px'});
+    all.forEach(function(el){ io.observe(el); });
+  })();
+
+  /* =====================================================================
+     4. WORDMARK
+     ===================================================================== */
+  (function(){
+    var wm = document.getElementById('wm');
+    if (!wm || REDUCED || !HAS_GSAP) return;
+    var txt = wm.textContent, frag = document.createDocumentFragment();
+    wm.setAttribute('aria-label', txt); wm.textContent = '';
+    for (var i=0;i<txt.length;i++){
+      var s = document.createElement('span');
+      s.textContent = txt[i] === ' ' ? ' ' : txt[i];
+      s.style.display = 'inline-block'; s.setAttribute('aria-hidden','true');
+      frag.appendChild(s);
+    }
+    wm.appendChild(frag);
+    gsap.from(wm.children,{opacity:0,yPercent:48,duration:1,stagger:.04,ease:'expo.out',delay:.18});
+  })();
+
+  /* =====================================================================
+     5. IMMAGINI: cornice, tendina d'apertura, parallasse interno
+     ===================================================================== */
+  (function(){
+    var imgs = [].slice.call(document.querySelectorAll('.skin img, .case img, .case video'));
+    if (!imgs.length) return;
+    var frames = imgs.map(function(img){
+      var mf = document.createElement('div');
+      mf.className = 'mf';
+      img.parentNode.insertBefore(mf, img);
+      mf.appendChild(img);
+      return {mf:mf, img:img};
+    });
+    if (REDUCED) return;
+
+    if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+      },{rootMargin:'0px 0px -8% 0px'});
+      frames.forEach(function(f){ io.observe(f.mf); });
+    } else {
+      frames.forEach(function(f){ f.mf.classList.add('in'); });
+    }
+
+    var ticking = false;
+    function par(){
+      ticking = false;
+      var vh = window.innerHeight;
+      for (var i=0;i<frames.length;i++){
+        var r = frames[i].mf.getBoundingClientRect();
+        if (r.bottom < -80 || r.top > vh + 80) continue;
+        var c = (r.top + r.height/2 - vh/2) / vh;      /* -0.5 … 0.5 circa */
+        frames[i].img.style.transform = 'translate3d(0,' + (c * -5.2).toFixed(2) + '%,0)';
+      }
+    }
+    addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(par); } }, {passive:true});
+    addEventListener('resize', par);
+    par();
+  })();
+
+  /* =====================================================================
+     6. HERO: parallasse
+     ===================================================================== */
+  (function(){
+    var v = document.getElementById('heroVid'), inn = document.querySelector('.hero-in');
+    if (!v || REDUCED) return;
+    var ticking = false;
+    function upd(){
+      ticking = false;
+      var y = window.scrollY;
+      if (y > window.innerHeight * 1.2) return;
+      v.style.transform = 'translate3d(0,' + (y*0.22).toFixed(1) + 'px,0) scale(1.1)';
+      if (inn){
+        inn.style.transform = 'translate3d(0,' + (y*-0.1).toFixed(1) + 'px,0)';
+        inn.style.opacity = clamp(1 - y/(window.innerHeight*0.72), 0, 1).toFixed(3);
+      }
+    }
+    v.style.willChange = 'transform';
+    addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(upd); } }, {passive:true});
+    upd();
+  })();
+
+  /* =====================================================================
+     7. NUMERI CHE SALGONO
+     ===================================================================== */
+  (function(){
+    var els = [].slice.call(document.querySelectorAll('.stat .v.num'));
+    if (!els.length || REDUCED || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        var el = e.target, txt = el.textContent.trim();
+        var dec = (txt.split(',')[1] || '').length;
+        var end = parseFloat(txt.replace('.','').replace(',','.'));
+        if (isNaN(end)) return;
+        var t0 = 0;
+        function step(ts){
+          if (!t0) t0 = ts;
+          var k = clamp((ts-t0)/1100, 0, 1), v = end * easeOut5(k);
+          el.textContent = v.toFixed(dec).replace('.', ',');
+          if (k < 1) requestAnimationFrame(step); else el.textContent = txt;
+        }
+        requestAnimationFrame(step);
+      });
+    },{threshold:.5});
+    els.forEach(function(el){ io.observe(el); });
+  })();
+
+  /* =====================================================================
+     8. CONFRONTO PASSO 1,5 / 3,9
+     ===================================================================== */
+  (function(){
+    var rng = document.getElementById('pitchRange'),
+        coarse = document.getElementById('pitchCoarse'),
+        split = document.getElementById('pitchSplit');
+    if (!rng || !coarse || !split) return;
+    function set(v){ coarse.style.clipPath = 'inset(0 0 0 '+v+'%)'; split.style.left = v+'%'; }
+    rng.addEventListener('input', function(){ set(this.value); });
+    set(rng.value);
+  })();
+
+  /* =====================================================================
+     9. LE TRE PARETI SVOLTE: griglia dei cabinet nel diagramma
+     ===================================================================== */
+  (function(){
+    var g = document.getElementById('urGrid');
+    if (!g) return;
+    var d = '', x, y;
+    for (x = 50; x < 1050; x += 50) d += 'M'+x+' 0V250';
+    for (y = 50; y < 250; y += 50) d += 'M0 '+y+'H1050';
+    g.setAttribute('d', d);
+  })();
+
+  /* =====================================================================
+     10. VIDEO: carica e riproduci solo ciò che è a schermo
+     ===================================================================== */
+  (function(){
+    var vids = [].slice.call(document.querySelectorAll('video'));
+    if (!vids.length) return;
+    if (!('IntersectionObserver' in window)){
+      vids.forEach(function(v){ if (v.dataset.src && !v.src) v.src = v.dataset.src; });
+      return;
+    }
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var v = e.target;
+        if (e.isIntersecting){
+          if (v.dataset.src && !v.src){ v.src = v.dataset.src; v.load(); }
+          var pr = v.play(); if (pr && pr.catch) pr.catch(function(){});
+        } else if (!v.paused){ v.pause(); }
+      });
+    },{rootMargin:'250px 0px'});
+    vids.forEach(function(v){ io.observe(v); });
+  })();
+
+  /* =====================================================================
+     11. BANDA DEI MARCHI
+     La striscia va duplicata esatta una volta sola: l'animazione trasla del
+     50% della pista, quindi il secondo giro riparte dove finisce il primo e
+     non si vede la giunzione.
+     ===================================================================== */
+  (function(){
+    var track = document.getElementById('tkTrack'),
+        band  = document.getElementById('tk'),
+        btn   = document.getElementById('tkPause');
+    if (!track || !band) return;
+    var n = track.children.length;
+    if (!n){ band.parentNode.removeChild(band); if (btn) btn.style.display = 'none'; return; }
+
+    if (!REDUCED){
+      for (var i = 0; i < n; i++){
+        var c = track.children[i].cloneNode(true);
+        c.setAttribute('aria-hidden','true');
+        c.removeAttribute('role');
+        track.appendChild(c);
+      }
+      /* la durata cresce con il numero di marchi, così la velocità resta uguale */
+      track.style.animationDuration = Math.max(28, n * 3.4).toFixed(0) + 's';
+    } else if (btn){ btn.style.display = 'none'; }
+
+    if (btn){
+      btn.addEventListener('click', function(){
+        var on = band.classList.toggle('stopped');
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.textContent = on ? 'Riprendi lo scorrimento' : 'Ferma lo scorrimento';
+      });
+    }
+  })();
+
+  /* =====================================================================
+     STRUMENTI COMUNI ALLE SCENE TRIDIMENSIONALI
+     ===================================================================== */
+  /* Una sola funzione per la sorgente di parete: prova la versione ad alta
+     definizione e ripiega da sola sull'originale se non c'e'. */
+  function ledVideo(srcs){
+    var v = document.createElement('video');
+    v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+    v.setAttribute('playsinline',''); v.setAttribute('muted','');
+    (srcs || ['img/wall-loop-2k.mp4','img/wall-loop.mp4']).forEach(function(src){
+      var so = document.createElement('source'); so.src = src; so.type = 'video/mp4'; v.appendChild(so);
+    });
+    return v;
+  }
+  function ledTexture(v){
+    var t = new THREE.VideoTexture(v);
+    t.minFilter = THREE.LinearFilter; t.magFilter = THREE.LinearFilter; t.generateMipmaps = false;
+    if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  function makeRenderer(host, alpha){
+    var r;
+    try { r = new THREE.WebGLRenderer({antialias:true, alpha:!!alpha, powerPreference:'high-performance'}); }
+    catch(e){ return null; }
+    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    if (alpha) r.setClearAlpha(0); else r.setClearColor(0x000000, 1);
+    if (THREE.sRGBEncoding) r.outputEncoding = THREE.sRGBEncoding;
+    host.appendChild(r.domElement);
+    return r;
+  }
+  function fitTo(host, renderer, camera){
+    return function(){
+      var w = host.clientWidth || 1, h = host.clientHeight || 1;
+      renderer.setSize(w, h, false);
+      camera.aspect = w/h; camera.updateProjectionMatrix();
+    };
+  }
+  /* trama del cabinet: struttura fine del pixel più il bordo della giunzione */
+  function fineTexture(renderer){
+    var S = 256, c = document.createElement('canvas'); c.width = c.height = S;
+    var g = c.getContext('2d');
+    g.strokeStyle = 'rgba(0,0,0,0.22)'; g.lineWidth = 1;
+    for (var i = 8; i < S; i += 8){
+      g.beginPath(); g.moveTo(i+.5,0); g.lineTo(i+.5,S); g.stroke();
+      g.beginPath(); g.moveTo(0,i+.5); g.lineTo(S,i+.5); g.stroke();
+    }
+    g.strokeStyle = 'rgba(0,0,0,0.66)'; g.lineWidth = 4; g.strokeRect(2,2,S-4,S-4);
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    if (renderer && renderer.capabilities.getMaxAnisotropy) t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return t;
+  }
+  function mirrorTexture(){
+    var c = document.createElement('canvas'); c.width = 8; c.height = 256;
+    var g = c.getContext('2d'), grd = g.createLinearGradient(0,0,0,256);
+    grd.addColorStop(0,   'rgba(172,184,200,0.40)');
+    grd.addColorStop(0.42,'rgba(172,184,200,0.11)');
+    grd.addColorStop(1,   'rgba(172,184,200,0.36)');
+    g.fillStyle = grd; g.fillRect(0,0,8,256);
+    return new THREE.CanvasTexture(c);
+  }
+  /* banda di luce che corre sullo specchio appena si posa */
+  function sweepTexture(){
+    var c = document.createElement('canvas'); c.width = 512; c.height = 4;
+    var g = c.getContext('2d'), grd = g.createLinearGradient(0,0,512,0);
+    grd.addColorStop(0,    'rgba(255,255,255,0)');
+    grd.addColorStop(0.40, 'rgba(255,255,255,0)');
+    grd.addColorStop(0.48, 'rgba(255,220,180,0.55)');
+    grd.addColorStop(0.52, 'rgba(255,220,180,0.55)');
+    grd.addColorStop(0.60, 'rgba(255,255,255,0)');
+    grd.addColorStop(1,    'rgba(255,255,255,0)');
+    g.fillStyle = grd; g.fillRect(0,0,512,4);
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  }
+  function labelSprite(text, color, worldH){
+    var fs = 72, pad = 16;
+    var c = document.createElement('canvas'), g = c.getContext('2d');
+    var font = '500 ' + fs + 'px "Inter Tight", Inter, Helvetica, Arial, sans-serif';
+    g.font = font;
+    c.width  = Math.ceil(g.measureText(text).width) + pad*2;
+    c.height = Math.ceil(fs * 1.35);
+    g = c.getContext('2d');
+    g.font = font; g.fillStyle = color;
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(text, c.width/2, c.height/2);
+    var t = new THREE.CanvasTexture(c);
+    t.minFilter = THREE.LinearFilter; t.generateMipmaps = false;
+    if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
+    var s = new THREE.Sprite(new THREE.SpriteMaterial({map:t, transparent:true, depthTest:false, depthWrite:false, opacity:0}));
+    s.scale.set(worldH * c.width / c.height, worldH, 1);
+    s.renderOrder = 30;
+    s.userData.setText = function(txt){
+      var gg = c.getContext('2d');
+      gg.font = font;
+      var nw = Math.ceil(gg.measureText(txt).width) + pad*2;
+      if (nw !== c.width) c.width = nw;
+      gg = c.getContext('2d');
+      gg.clearRect(0,0,c.width,c.height);
+      gg.font = font; gg.fillStyle = color;
+      gg.textAlign = 'center'; gg.textBaseline = 'middle';
+      gg.fillText(txt, c.width/2, c.height/2);
+      t.needsUpdate = true;
+      s.scale.set(worldH * c.width / c.height, worldH, 1);
+    };
+    return s;
+  }
+  function dimLine(pts, color){
+    var g = new THREE.BufferGeometry().setFromPoints(pts);
+    return new THREE.Line(g, new THREE.LineBasicMaterial({color:color, transparent:true, opacity:0}));
+  }
+
+  /* =====================================================================
+     SCENA A — IL MONTAGGIO
+     ---------------------------------------------------------------------
+     Ricostruzione in codice, in scala reale sul formato Origin:
+     3,50 × 2,50 × 3,50 m. Le pareti non sono tre pannelli: sono
+     centocinque cabinet da 500 × 500 che si sollevano da terra a ondate,
+     fila per fila, come in un montaggio vero. Due specchi orizzontali e
+     tre ordini di copie speculari sopra e sotto riproducono il rimbalzo,
+     che nella stanza reale si esaurisce in poche riflessioni.
+     ===================================================================== */
+  (function(){
+    var host = document.getElementById('cubeStage'), sec = document.getElementById('build'),
+        fb = document.getElementById('cubeFallback'),
+        beats = [].slice.call(document.querySelectorAll('#beats li')),
+        counterEl = document.getElementById('cabCount'),
+        scrubEl = document.getElementById('buildScrub');
+
+    function bail(){ if (fb) fb.hidden = false; if (beats.length) beats[beats.length-1].classList.add('on'); }
+    if (!host || !sec) return;
+    if (!CAN3D) return bail();
+
+    var W=3.5, H=2.5, D=3.5, MOD=0.5, COLS=7, ROWS=5, GAP=0.005, CS=MOD-GAP;
+
+    var scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x000000, 0.046);
+    var camera = new THREE.PerspectiveCamera(44, 1, 0.05, 140);
+    var renderer = makeRenderer(host, false);
+    if (!renderer) return bail();
+
+    var vid = ledVideo(), vtex = ledTexture(vid);
+
+    var fineT = fineTexture(renderer), mirT = mirrorTexture(), swpT = sweepTexture();
+
+    var room = new THREE.Group(); scene.add(room);
+
+    var WALLS = [
+      {rotY:0,           ox:0,     oz:-D/2, nx:0,  nz:1,  w:W, order:0.00},
+      {rotY: Math.PI/2,  ox:-W/2,  oz:0,    nx:1,  nz:0,  w:D, order:0.30},
+      {rotY:-Math.PI/2,  ox: W/2,  oz:0,    nx:-1, nz:0,  w:D, order:0.30}
+    ];
+
+    /* ---- telaio scuro dietro i cabinet: è lui a far leggere le giunzioni ---- */
+    var backs = [];
+    WALLS.forEach(function(wd){
+      var m = new THREE.Mesh(
+        new THREE.PlaneGeometry(wd.w + 0.04, H + 0.04),
+        new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:0})
+      );
+      m.position.set(wd.ox - wd.nx*0.03, 0, wd.oz - wd.nz*0.03);
+      m.rotation.y = wd.rotY; m.renderOrder = 1;
+      room.add(m); backs.push(m);
+    });
+
+    /* ---- i centocinque cabinet ---- */
+    var cabs = [], n = 0, maxLight = 0;
+    WALLS.forEach(function(wd){
+      for (var r = 0; r < ROWS; r++){
+        for (var c = 0; c < COLS; c++){
+          var geo = new THREE.PlaneGeometry(CS, CS);
+          var u0 = c/COLS, du = 1/COLS, v0 = r/ROWS, dv = 1/ROWS, uv = geo.attributes.uv;
+          for (var k = 0; k < uv.count; k++) uv.setXY(k, u0 + uv.getX(k)*du, v0 + uv.getY(k)*dv);
+          uv.needsUpdate = true;
+
+          var mat = new THREE.MeshBasicMaterial({map:vtex, transparent:true, opacity:0, side:THREE.DoubleSide});
+          mat.color.setScalar(0.022);
+          var mesh = new THREE.Mesh(geo, mat);
+          mesh.renderOrder = 3;
+
+          var lu = (c + 0.5)*MOD - wd.w/2;
+          var hx = wd.ox + Math.cos(wd.rotY)*lu + wd.nx*0.006;
+          var hy = (r + 0.5)*MOD - H/2;
+          var hz = wd.oz - Math.sin(wd.rotY)*lu + wd.nz*0.006;
+
+          var hs = hash(n);
+          var dB = wd.order + (r/ROWS)*0.52 + (Math.abs(c-(COLS-1)/2)/((COLS-1)/2))*0.14 + hs*0.05;
+          var dL = Math.sqrt(hx*hx + (hz + D/2)*(hz + D/2)) / 3.9 + (1 - r/ROWS)*0.12;
+          if (dL > maxLight) maxLight = dL;
+
+          room.add(mesh);
+          cabs.push({
+            m: mesh, mat: mat,
+            hx: hx, hy: hy, hz: hz, ry: wd.rotY,
+            sx: hx + (hs-0.5)*0.22 - wd.nx*0.30,
+            sy: hy - 1.75 - r*0.22,
+            sz: hz + (hash(n+91)-0.5)*0.22 - wd.nz*0.30,
+            rx0: (hs-0.5)*0.7, rz0: (hash(n+37)-0.5)*0.5,
+            dB: dB, dL: dL
+          });
+          n++;
+        }
+      }
+    });
+    var dbMin = Infinity, dbMax = -Infinity;
+    cabs.forEach(function(k){ if (k.dB<dbMin) dbMin=k.dB; if (k.dB>dbMax) dbMax=k.dB; });
+    cabs.forEach(function(k){ k.dB = (k.dB - dbMin)/(dbMax - dbMin || 1); k.dL = k.dL/(maxLight||1); });
+
+    /* ---- specchi, con la banda di luce che li attraversa quando si posano ---- */
+    function mirror(up){
+      var mat = new THREE.MeshBasicMaterial({map:mirT, color:0x1b1f26, transparent:true, opacity:0,
+                                             side:THREE.DoubleSide, depthWrite:false});
+      var m = new THREE.Mesh(new THREE.PlaneGeometry(W, D), mat);
+      m.rotation.x = up ? -Math.PI/2 : Math.PI/2;
+      m.renderOrder = 2;
+      var st = swpT.clone(); st.wrapS = st.wrapT = THREE.RepeatWrapping; st.needsUpdate = true;
+      var sw = new THREE.Mesh(new THREE.PlaneGeometry(W, D),
+        new THREE.MeshBasicMaterial({map:st, transparent:true, opacity:0, blending:THREE.AdditiveBlending,
+                                     depthWrite:false, side:THREE.DoubleSide}));
+      sw.rotation.x = m.rotation.x; sw.renderOrder = 4;
+      room.add(m); room.add(sw);
+      return {m:m, sw:sw, tex:st};
+    }
+    var mFloor = mirror(true), mCeil = mirror(false);
+
+    /* ---- copie speculari: tre ordini sopra, tre sotto ---- */
+    var echoes = [];
+    [[-1,1],[-2,0],[-3,1],[1,1],[2,0],[3,1]].forEach(function(e, ei){
+      var lvl = Math.abs(e[0]);
+      var base = [0, 0.50, 0.17, 0.055][lvl] * (e[0] > 0 ? 0.92 : 1);
+      var g = new THREE.Group();
+      WALLS.forEach(function(wd){
+        var led = new THREE.Mesh(new THREE.PlaneGeometry(wd.w, H),
+          new THREE.MeshBasicMaterial({map:vtex, transparent:true, opacity:0, side:THREE.DoubleSide}));
+        led.position.set(wd.ox, 0, wd.oz); led.rotation.y = wd.rotY; led.renderOrder = 0;
+        var ft = fineT.clone(); ft.wrapS = ft.wrapT = THREE.RepeatWrapping;
+        ft.repeat.set(COLS, ROWS); ft.anisotropy = fineT.anisotropy; ft.needsUpdate = true;
+        var grid = new THREE.Mesh(new THREE.PlaneGeometry(wd.w, H),
+          new THREE.MeshBasicMaterial({map:ft, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false}));
+        grid.position.set(wd.ox + wd.nx*0.01, 0, wd.oz + wd.nz*0.01);
+        grid.rotation.y = wd.rotY; grid.renderOrder = 0;
+        g.add(led); g.add(grid);
+      });
+      g.position.y = e[0]*H;
+      if (e[1]) g.scale.y = -1;
+      g.visible = false;
+      room.add(g);
+      echoes.push({g:g, lvl:lvl, base:base});
+    });
+
+    /* ---- il volume quotato, che è tutto quello che c'è nel primo battito ---- */
+    var ORANGE = new THREE.Color(0xFF8B00).convertSRGBToLinear();
+    var frameMat = new THREE.LineBasicMaterial({color:ORANGE, transparent:true, opacity:0});
+    var frame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)), frameMat);
+    room.add(frame);
+
+    var dims = [], labs = [];
+    (function(){
+      var o = 0.30, y0 = -H/2, V = THREE.Vector3;
+      dims.push(dimLine([new V(-W/2, y0-o, D/2), new V(W/2, y0-o, D/2)], ORANGE));
+      dims.push(dimLine([new V(W/2+o, y0, D/2), new V(W/2+o, H/2, D/2)], ORANGE));
+      dims.push(dimLine([new V(W/2+o, y0-o, -D/2), new V(W/2+o, y0-o, D/2)], ORANGE));
+      dims.forEach(function(l){ room.add(l); });
+
+      var a = labelSprite('350', '#FF8B00', 0.26); a.position.set(0, y0-o-0.22, D/2);
+      var b = labelSprite('250', '#FF8B00', 0.26); b.position.set(W/2+o+0.28, 0, D/2);
+      var c = labelSprite('350', '#FF8B00', 0.26); c.position.set(W/2+o+0.30, y0-o, 0);
+      labs = [a,b,c]; labs.forEach(function(s){ room.add(s); });
+    })();
+
+    /* ---- macchina da presa: sei stazioni, con giro intorno al volume ---- */
+    var KEYS = [
+      {p:0.00, pos:[ 5.10, 3.00, 7.30], tgt:[0,-0.28,-0.20], fov:38},
+      {p:0.17, pos:[ 3.30, 1.95, 6.50], tgt:[0,-0.16,-0.30], fov:41},
+      {p:0.38, pos:[-2.95, 1.45, 5.15], tgt:[0, 0.05,-0.35], fov:47},
+      {p:0.62, pos:[-1.10, 0.55, 4.20], tgt:[0, 0.00,-1.00], fov:51},
+      {p:0.84, pos:[ 0.35, 0.18, 2.60], tgt:[0, 0.03,-1.50], fov:60},
+      {p:1.00, pos:[ 0.00,-0.03, 1.74], tgt:[0, 0.06,-1.75], fov:66}
+    ];
+    var aim = new THREE.Vector3(), px = 0, py = 0, tpx = 0, tpy = 0;
+    host.addEventListener('pointermove', function(e){
+      var r = host.getBoundingClientRect();
+      tpx = ((e.clientX - r.left)/r.width - 0.5) * 2;
+      tpy = ((e.clientY - r.top)/r.height - 0.5) * 2;
+    });
+    host.addEventListener('pointerleave', function(){ tpx = 0; tpy = 0; });
+
+    function camAt(p, time, dt){
+      var i = 0;
+      while (i < KEYS.length-2 && p > KEYS[i+1].p) i++;
+      var a = KEYS[i], b = KEYS[i+1];
+      var t = easeIO(clamp((p - a.p)/(b.p - a.p), 0, 1));
+      px += (tpx - px) * Math.min(1, dt*3); py += (tpy - py) * Math.min(1, dt*3);
+      var breathe = REDUCED ? 0 : 1;
+      var drift = (1 - p) * 0.9 + 0.1;
+      camera.position.set(
+        lerp(a.pos[0],b.pos[0],t) + (px*0.16 + Math.sin(time*0.47)*0.020*drift) * breathe,
+        lerp(a.pos[1],b.pos[1],t) + (-py*0.10 + Math.cos(time*0.39)*0.016*drift) * breathe,
+        lerp(a.pos[2],b.pos[2],t) + Math.sin(time*0.31)*0.018*drift * breathe
+      );
+      aim.set(lerp(a.tgt[0],b.tgt[0],t) + px*0.05*breathe,
+              lerp(a.tgt[1],b.tgt[1],t) - py*0.03*breathe,
+              lerp(a.tgt[2],b.tgt[2],t));
+      var f = lerp(a.fov, b.fov, t);
+      if (Math.abs(camera.fov - f) > 0.02){ camera.fov = f; camera.updateProjectionMatrix(); }
+      camera.lookAt(aim);
+      camera.rotation.z += Math.sin(time*0.23) * 0.006 * breathe;
+    }
+
+    /* ---- stato in funzione dell'avanzamento ---- */
+    var lastBeat = -1, lastCount = -1;
+    var SPREAD_B = 0.66, SPREAD_L = 0.92;
+
+    function apply(p, time, dt){
+      var pFrame = 1 - sub(p,0.150,0.255);
+      var pFloor = easeOut(sub(p,0.090,0.230));
+      var pWalls = sub(p,0.235,0.560);
+      var pCeil  = easeOut(sub(p,0.570,0.680));
+      var pLed   = sub(p,0.635,0.880);
+      var pEcho  = sub(p,0.660,1.000);
+      var pShow  = sub(p,0.225,0.300);
+
+      frameMat.opacity = pFrame * 0.9;
+      dims.forEach(function(l){ l.material.opacity = pFrame * 0.75; });
+      labs.forEach(function(s){ s.material.opacity = pFrame; });
+      backs.forEach(function(m){ m.material.opacity = pShow; });
+
+      /* i cabinet: ognuno con il suo ritardo, sollevati fila per fila */
+      var mounted = 0;
+      for (var i = 0; i < cabs.length; i++){
+        var k = cabs[i];
+        var q = clamp(pWalls*(1+SPREAD_B) - k.dB*SPREAD_B, 0, 1);
+        if (q > 0.5) mounted++;
+        if (q <= 0){
+          if (k.mat.opacity !== 0){ k.mat.opacity = 0; k.m.visible = false; }
+          continue;
+        }
+        k.m.visible = true;
+        var e = easeBack(q), eo = easeOut(q);
+        k.m.position.set(lerp(k.sx,k.hx,e), lerp(k.sy,k.hy,e), lerp(k.sz,k.hz,e));
+        k.m.rotation.set(k.rx0*(1-eo), k.ry, k.rz0*(1-eo));
+        var s = lerp(0.82, 1, e); k.m.scale.set(s,s,1);
+
+        var lq = clamp(pLed*(1+SPREAD_L) - k.dL*SPREAD_L, 0, 1);
+        var flash = Math.sin(Math.PI * lq) * 0.42;
+        k.mat.color.setScalar(0.022 + easeOut(lq)*0.978 + flash);
+        k.mat.opacity = clamp(q*2.4, 0, 1);
+      }
+      if (mounted !== lastCount && counterEl){ counterEl.textContent = mounted; lastCount = mounted; }
+
+      /* specchi */
+      mFloor.m.material.opacity = pFloor * 0.88;
+      mFloor.m.position.y = -H/2 - (1-pFloor)*0.65;
+      mCeil.m.material.opacity  = pCeil * 0.88;
+      mCeil.m.position.y  =  H/2 + (1-pCeil)*0.80;
+      mFloor.sw.position.y = mFloor.m.position.y + 0.004;
+      mCeil.sw.position.y  = mCeil.m.position.y  - 0.004;
+      var swF = Math.sin(Math.PI * sub(p,0.175,0.275));
+      var swC = Math.sin(Math.PI * sub(p,0.645,0.730));
+      mFloor.sw.material.opacity = swF * 0.8; mFloor.tex.offset.x = -sub(p,0.175,0.275);
+      mCeil.sw.material.opacity  = swC * 0.8; mCeil.tex.offset.x  = -sub(p,0.645,0.730);
+
+      /* le copie speculari entrano una dopo l'altra, dalla più vicina */
+      for (var j = 0; j < echoes.length; j++){
+        var ec = echoes[j];
+        var ep = easeOut(sub(pEcho, (ec.lvl-1)*0.19, (ec.lvl-1)*0.19 + 0.40));
+        ec.g.visible = ep > 0.004;
+        if (!ec.g.visible) continue;
+        ec.g.traverse(function(o){
+          if (!o.isMesh) return;
+          var isGrid = o.material.map && o.material.map !== vtex;
+          o.material.opacity = ec.base * ep * (isGrid ? 0.7 : 1) * (0.35 + pLed*0.65);
+          if (!isGrid) o.material.color.setScalar(0.022 + easeOut(pLed)*0.978);
+        });
+      }
+
+      camAt(p, time, dt);
+
+      var step = Math.min(beats.length-1, Math.floor(p*beats.length));
+      if (step !== lastBeat){
+        if (lastBeat >= 0 && beats[lastBeat]) beats[lastBeat].classList.remove('on');
+        if (beats[step]) beats[step].classList.add('on');
+        lastBeat = step;
+      }
+      if (scrubEl) scrubEl.style.height = (p*100).toFixed(1) + '%';
+    }
+
+    var resize = fitTo(host, renderer, camera);
+    addEventListener('resize', resize); resize();
+
+    var prog = REDUCED ? 0.94 : 0;
+    if (!REDUCED){
+      if (HAS_GSAP){
+        ScrollTrigger.create({trigger:sec, start:'top top', end:'bottom bottom', scrub:true,
+          onUpdate:function(self){ prog = self.progress; wake(); }});
+      } else {
+        var tick = false;
+        var onScroll = function(){
+          if (tick) return; tick = true;
+          requestAnimationFrame(function(){
+            tick = false;
+            var total = sec.offsetHeight - window.innerHeight;
+            prog = total > 0 ? clamp(-sec.getBoundingClientRect().top/total, 0, 1) : 1;
+            wake();
+          });
+        };
+        addEventListener('scroll', onScroll, {passive:true}); onScroll();
+      }
+    }
+
+    var a = actor(sec, function(dt, t){
+      apply(prog, t, dt);
+      renderer.render(scene, camera);
+      if (vid.paused){ var pr = vid.play(); if (pr && pr.catch) pr.catch(function(){}); }
+    }, '160px 0px');
+
+    if (REDUCED){
+      a.live = false;
+      var draw = function(){ apply(prog, 0, 0.016); renderer.render(scene, camera); };
+      vid.addEventListener('loadeddata', draw);
+      vid.play().catch(function(){});
+      setTimeout(draw, 350); draw();
+      if (beats.length) beats[beats.length-1].classList.add('on');
+    }
+  })();
+
+  /* =====================================================================
+     SCENA B — IL CONFIGURATORE DEI FORMATI
+     ---------------------------------------------------------------------
+     Lo stesso cubo, in scala, con dentro una persona alta 175 cm che non
+     cambia mai. Passare a Grand non ridisegna niente: aggiunge una
+     colonna di cabinet per lato e una fila sopra, e allontana le tre
+     pareti di venticinque centimetri ciascuna. Da 105 pezzi a 162, stesso
+     modulo. Si può girare intorno trascinando.
+     ===================================================================== */
+  (function(){
+    var host  = document.getElementById('fmtStage'),
+        fb    = document.getElementById('fmtFallback'),
+        hint  = document.getElementById('cfgHint'),
+        lede  = document.getElementById('cfgLede'),
+        stats = document.getElementById('cfgStats'),
+        btns  = [].slice.call(document.querySelectorAll('.seg button'));
+    if (!host) return;
+
+    var FMT = {
+      origin:{ W:3.5, D:3.5, H:2.5, cols:7, rows:5,
+        parete:'350 × 250 cm', pianta:'350 × 350 cm', led:'26,25 m²', cab:'105', mod:'7 × 5', cap:'6–8 persone',
+        lede:'Tre metri e mezzo di lato, due e mezzo d’altezza. Sette cabinet in larghezza, cinque in altezza: il modulo da 500 torna esatto, senza un pannello tagliato.' },
+      grand:{ W:4.5, D:4.5, H:3.0, cols:9, rows:6,
+        parete:'450 × 300 cm', pianta:'450 × 450 cm', led:'40,5 m²', cab:'162', mod:'9 × 6', cap:'12–15 persone',
+        lede:'Una colonna di cabinet in più per lato e una fila sopra. Il tratteggio che resta a terra è l’ingombro di Origin: è esattamente quello che il metro in più ti compra.' }
+    };
+    var size = 'origin';
+
+    function writePanel(k){
+      var d = FMT[k];
+      if (lede) lede.textContent = d.lede;
+      ['parete','pianta','led','cab','mod','cap'].forEach(function(f){
+        var el = stats && stats.querySelector('[data-k="'+f+'"]');
+        if (el) el.textContent = d[f];
+      });
+      btns.forEach(function(b){
+        var on = b.getAttribute('data-s') === k;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+
+    if (!CAN3D){
+      if (fb) fb.hidden = false;
+      if (hint) hint.classList.add('off');
+      btns.forEach(function(b){ b.addEventListener('click', function(){ size = this.getAttribute('data-s'); writePanel(size); }); });
+      writePanel(size);
+      return;
+    }
+
+    var MOD=0.5, GAP=0.016, CS=MOD-GAP, CMAX=9, RMAX=6;
+
+    /* qui la parete si accende con il contenuto di Marchiol, non con quello
+       di GLO: due scene tridimensionali, due lavori reali diversi. */
+    var vidB = ledVideo(['img/marchiol-cubo.mp4','img/wall-loop-2k.mp4','img/wall-loop.mp4']),
+        vtexB = ledTexture(vidB);
+    var fineB = fineTexture(null);
+    /* maschera del riflesso: pieno a filo del pavimento, spento poco sotto */
+    var reflMask = (function(){
+      var c = document.createElement('canvas'); c.width = 4; c.height = 256;
+      var g = c.getContext('2d'), grd = g.createLinearGradient(0, 0, 0, 256);
+      grd.addColorStop(0,    '#000000');
+      grd.addColorStop(0.52, '#3a3a3a');
+      grd.addColorStop(1,    '#ffffff');
+      g.fillStyle = grd; g.fillRect(0, 0, 4, 256);
+      return new THREE.CanvasTexture(c);
+    })();
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+    var renderer = makeRenderer(host, true);
+    if (!renderer){ if (fb) fb.hidden = false; return; }
+
+    var rig = new THREE.Group(); scene.add(rig);
+
+    /* ombra di contatto */
+    (function(){
+      var c = document.createElement('canvas'); c.width = c.height = 256;
+      var g = c.getContext('2d');
+      var grd = g.createRadialGradient(128,128,10,128,128,126);
+      grd.addColorStop(0,'rgba(12,12,13,0.26)');
+      grd.addColorStop(0.55,'rgba(12,12,13,0.12)');
+      grd.addColorStop(1,'rgba(12,12,13,0)');
+      g.fillStyle = grd; g.fillRect(0,0,256,256);
+      var m = new THREE.Mesh(new THREE.PlaneGeometry(9,9),
+        new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c), transparent:true, depthWrite:false}));
+      m.rotation.x = -Math.PI/2; m.position.y = 0.004; m.renderOrder = 0;
+      rig.add(m);
+    })();
+
+    /* reticolo tecnico a terra: dà profondità e dice che è un disegno in scala */
+    (function(){
+      var pts = [], R = 4.6, V = THREE.Vector3;
+      for (var i = -9; i <= 9; i++){
+        var u = i*0.5;
+        pts.push(new V(u,0,-R), new V(u,0,R));
+        pts.push(new V(-R,0,u), new V(R,0,u));
+      }
+      var g = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({color:0xC6CCD4, transparent:true, opacity:0.55}));
+      g.position.y = 0.002; g.renderOrder = 0;
+      rig.add(g);
+    })();
+
+    /* le tre pareti, a cabinet. La tinta cambia per faccia: senza luci è
+       l'unico modo di far leggere lo spigolo su fondo chiaro. */
+    var WALLS = [
+      {axis:'z', sign:-1, tone:0x24242C, rotY:0},
+      {axis:'x', sign:-1, tone:0x1A1A21, rotY: Math.PI/2},
+      {axis:'x', sign: 1, tone:0x141419, rotY:-Math.PI/2}
+    ];
+    var groups = [], cabs = [], backs = [], lits = [];
+
+    WALLS.forEach(function(wd, wi){
+      var grp = new THREE.Group(); rig.add(grp); groups.push(grp);
+
+      var back = new THREE.Mesh(new THREE.PlaneGeometry(1,1),
+        new THREE.MeshBasicMaterial({color:0x08080B, transparent:true, opacity:0.9, side:THREE.DoubleSide}));
+      back.rotation.y = wd.rotY; back.renderOrder = 1;
+      grp.add(back); backs.push({m:back, wd:wd});
+
+      /* la parete accesa, dietro ai cabinet: compare quando ci si affaccia dentro */
+      var led = new THREE.Mesh(new THREE.PlaneGeometry(1,1),
+        new THREE.MeshBasicMaterial({map:vtexB, transparent:true, opacity:0, side:THREE.DoubleSide}));
+      led.rotation.y = wd.rotY; led.renderOrder = 2;
+      grp.add(led);
+
+      /* e il suo riflesso sul pavimento, che è il mestiere di questo oggetto */
+      var refl = new THREE.Mesh(new THREE.PlaneGeometry(1,1),
+        new THREE.MeshBasicMaterial({map:vtexB, alphaMap:reflMask, transparent:true, opacity:0,
+                                     side:THREE.DoubleSide, depthWrite:false}));
+      refl.rotation.y = wd.rotY; refl.scale.y = -1; refl.renderOrder = 1;
+      grp.add(refl);
+
+      /* la trama delle giunzioni, davanti a tutto, quando la parete è accesa */
+      var ft = fineB.clone(); ft.wrapS = ft.wrapT = THREE.RepeatWrapping; ft.needsUpdate = true;
+      var seam = new THREE.Mesh(new THREE.PlaneGeometry(1,1),
+        new THREE.MeshBasicMaterial({map:ft, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false}));
+      seam.rotation.y = wd.rotY; seam.renderOrder = 4;
+      grp.add(seam);
+      lits.push({led:led, refl:refl, seam:seam, tex:ft, wd:wd, i:wi});
+
+      for (var r = 0; r < RMAX; r++){
+        for (var g = 0; g < CMAX; g++){
+          var mesh = new THREE.Mesh(new THREE.PlaneGeometry(CS, CS),
+            new THREE.MeshBasicMaterial({color:wd.tone, transparent:true, opacity:1, side:THREE.DoubleSide}));
+          mesh.rotation.y = wd.rotY; mesh.renderOrder = 3;
+          var u = 0.5*g - 2.0;                 /* identico nei due formati */
+          if (wd.axis === 'z'){ mesh.position.set(u, 0, 0.035); }
+          else { mesh.position.set(-wd.sign*0.035, 0, -wd.sign*u); }
+          mesh.position.y = (r + 0.5)*MOD;
+          grp.add(mesh);
+          cabs.push({m:mesh, mat:mesh.material, wd:wd, g:g, r:r,
+                     ring:(g === 0 || g === CMAX-1 || r === RMAX-1),
+                     d:(Math.abs(g-4)/4)*0.6 + (r/RMAX)*0.4});
+        }
+      }
+    });
+
+    /* la persona: 175 cm, ferma. È il cubo che cresce intorno. */
+    (function(){
+      var S = 0.01, shapes = [];
+      function pt(x,y){ return new THREE.Vector2((x-25)*S, (175-y)*S); }
+      var torso = new THREE.Shape([
+        pt(13,24), pt(37,24), pt(42,76), pt(33,76), pt(31,46),
+        pt(28,76), pt(22,76), pt(19,46), pt(17,76), pt(8,76)
+      ]);
+      shapes.push(torso);
+      var head = new THREE.Shape(); head.absarc((25-25)*S, (175-11)*S, 10*S, 0, Math.PI*2, false);
+      shapes.push(head);
+      function leg(x0){
+        var s = new THREE.Shape([pt(x0,76), pt(x0+8.5,76), pt(x0+8.5,175), pt(x0,175)]);
+        return s;
+      }
+      shapes.push(leg(15)); shapes.push(leg(26.5));
+      var geo = new THREE.ExtrudeGeometry(shapes, {depth:0.20, bevelEnabled:false});
+      geo.translate(0, 0, -0.10);
+      var fig = new THREE.Mesh(geo, [
+        new THREE.MeshBasicMaterial({color:new THREE.Color(0xFF8B00).convertSRGBToLinear()}),
+        new THREE.MeshBasicMaterial({color:new THREE.Color(0xB65F00).convertSRGBToLinear()})
+      ]);
+      fig.position.set(0.78, 0, 0.55);
+      fig.rotation.y = -0.22;
+      fig.renderOrder = 3;
+      rig.add(fig);
+    })();
+
+    /* l'ingombro di Origin, che resta a terra quando si passa a Grand */
+    var ghost = (function(){
+      var g = new THREE.EdgesGeometry(new THREE.BoxGeometry(3.5, 2.5, 3.5));
+      var m = new THREE.LineSegments(g, new THREE.LineDashedMaterial({
+        color:new THREE.Color(0xFF8B00).convertSRGBToLinear(), transparent:true, opacity:0, dashSize:0.16, gapSize:0.11
+      }));
+      m.computeLineDistances(); m.position.y = 1.25; m.renderOrder = 4;
+      rig.add(m); return m;
+    })();
+
+    /* quote */
+    var dimW = dimLine([new THREE.Vector3(0,0,0), new THREE.Vector3(1,0,0)], 0x5A6068);
+    var dimH = dimLine([new THREE.Vector3(0,0,0), new THREE.Vector3(0,1,0)], 0x5A6068);
+    dimW.material.opacity = 0.9; dimH.material.opacity = 0.9;
+    rig.add(dimW); rig.add(dimH);
+    var labW = labelSprite('350 cm', '#5A6068', 0.30);
+    var labH = labelSprite('250 cm', '#5A6068', 0.30);
+    labW.material.opacity = 1; labH.material.opacity = 1;
+    rig.add(labW); rig.add(labH);
+
+    /* ---- stato e transizione ---- */
+    var tf = 0, tfTarget = 0;
+
+    function layout(){
+      var W = lerp(FMT.origin.W, FMT.grand.W, tf),
+          D = lerp(FMT.origin.D, FMT.grand.D, tf),
+          H = lerp(FMT.origin.H, FMT.grand.H, tf);
+
+      groups[0].position.z = -D/2;
+      groups[1].position.x = -W/2;
+      groups[2].position.x =  W/2;
+
+      backs.forEach(function(b, i){
+        var w = (i === 0 ? W : D);
+        b.m.scale.set(w + 0.05, H + 0.05, 1);
+        b.m.position.y = H/2;
+        b.m.position.x = 0; b.m.position.z = 0;
+      });
+
+      /* quanto si sta guardando dentro: zero di fianco, uno in asse con l'apertura */
+      var lit = 1 - clamp((Math.abs(az) - 0.10)/0.62, 0, 1);
+      lit = lit*lit*(3 - 2*lit);
+      var dark = 1 - lit;
+
+      for (var i = 0; i < cabs.length; i++){
+        var k = cabs[i];
+        var q = k.ring ? clamp(tf*1.5 - k.d*0.5, 0, 1) : 1;
+        k.m.visible = q > 0.01;
+        if (!k.m.visible) continue;
+        k.mat.opacity = q * (0.06 + dark*0.94);
+        if (k.ring){
+          var e = easeBack(q), sc = lerp(0.7, 1, e);
+          k.m.scale.set(sc, sc, 1);
+          var out = (1 - e) * 0.85;      /* entra volando da fuori parete */
+          if (k.wd.axis === 'z') k.m.position.z = 0.035 - out;
+          else k.m.position.x = -k.wd.sign*(0.035 + out);
+        }
+      }
+
+      /* pareti accese, riflesso a terra, trama delle giunzioni */
+      for (var j = 0; j < lits.length; j++){
+        var L = lits[j], lw = (L.i === 0 ? W : D);
+        L.led.scale.set(lw, H, 1);  L.led.position.y  =  H/2;
+        L.refl.scale.set(lw, -H, 1); L.refl.position.y = -H/2;
+        L.seam.scale.set(lw, H, 1); L.seam.position.y =  H/2;
+        var off = 0.02, offS = 0.055;
+        if (L.wd.axis === 'z'){
+          L.led.position.z = off; L.refl.position.z = off; L.seam.position.z = offS;
+        } else {
+          L.led.position.x  = -L.wd.sign*off;
+          L.refl.position.x = -L.wd.sign*off;
+          L.seam.position.x = -L.wd.sign*offS;
+        }
+        L.led.material.opacity  = lit;
+        L.refl.material.opacity = lit * 0.46;
+        L.seam.material.opacity = lit * 0.55;
+        L.tex.repeat.set(Math.max(1, lw/MOD), Math.max(1, H/MOD));
+      }
+      if (hint && lit > 0.5 && !hintOff){ hintOff = true; hint.classList.add('off'); }
+
+      ghost.material.opacity = tf * 0.85;
+
+      var zf = D/2 + 0.34;
+      dimW.geometry.setFromPoints([new THREE.Vector3(-W/2, 0.01, zf), new THREE.Vector3(W/2, 0.01, zf)]);
+      dimH.geometry.setFromPoints([new THREE.Vector3(W/2+0.18, 0.01, zf), new THREE.Vector3(W/2+0.18, H, zf)]);
+      labW.position.set(0, 0.24, zf + 0.16);
+      labH.position.set(W/2+0.50, H/2, zf);
+      labW.userData.setText(Math.round(W*100) + ' cm');
+      labH.userData.setText(Math.round(H*100) + ' cm');
+
+      camera.position.setFromSphericalCoords(lerp(8.7, 10.1, tf), Math.PI/2 - el, az);
+      camera.position.y += lerp(1.15, 1.42, tf);
+      camera.lookAt(0, lerp(1.15, 1.42, tf), 0);
+    }
+
+    /* ---- girare intorno trascinando ---- */
+    var AZ0 = 0.40, az = AZ0, el = 0.30, vaz = 0, touched = false, dragging = false, lx = 0, ly = 0, idle = 0, hintOff = false;
+    host.addEventListener('pointerdown', function(e){
+      dragging = true; touched = true; lx = e.clientX; ly = e.clientY;
+      if (hint){ hint.classList.add('off'); hintOff = true; }
+      if (host.setPointerCapture) { try { host.setPointerCapture(e.pointerId); } catch(err){} }
+    });
+    host.addEventListener('pointermove', function(e){
+      if (!dragging) return;
+      var dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY;
+      az -= dx * 0.0062; vaz = -dx * 0.0062;
+      el = clamp(el + dy * 0.0040, 0.03, 0.66);
+      wake();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      host.addEventListener(ev, function(){ dragging = false; });
+    });
+
+    /* WCAG 2.2: il trascinamento non può essere l'unica strada. Tastiera e
+       due pulsanti fanno la stessa cosa. */
+    host.tabIndex = 0;
+    host.addEventListener('keydown', function(e){
+      var k = e.key, step = 0.16;
+      if (k === 'ArrowLeft')       { az += step; }
+      else if (k === 'ArrowRight') { az -= step; }
+      else if (k === 'ArrowUp')    { el = clamp(el + 0.07, 0.03, 0.66); }
+      else if (k === 'ArrowDown')  { el = clamp(el - 0.07, 0.03, 0.66); }
+      else return;
+      e.preventDefault(); touched = true; wake();
+    });
+    [].forEach.call(document.querySelectorAll('.cfg-ctl button'), function(b){
+      b.addEventListener('click', function(){
+        az += parseFloat(this.getAttribute('data-rot')) * 0.28;
+        touched = true; wake();
+      });
+    });
+
+    /* ---- il cambio di formato ---- */
+    var tw = {v:0};
+    function setSize(k){
+      if (k === size) return;
+      size = k; tfTarget = (k === 'grand') ? 1 : 0;
+      writePanel(k); wake();
+      if (HAS_GSAP){
+        gsap.killTweensOf(tw);
+        gsap.to(tw, {v:tfTarget, duration:1.05, ease:'power3.inOut',
+          onUpdate:function(){ tf = tw.v; wake(); },
+          onComplete:function(){ tf = tfTarget; }});
+      }
+    }
+    btns.forEach(function(b){ b.addEventListener('click', function(){ setSize(this.getAttribute('data-s')); }); });
+    writePanel(size);
+
+    var resize = fitTo(host, renderer, camera);
+    addEventListener('resize', resize); resize();
+    layout();
+
+    actor(host, function(dt){
+      if (vidB.paused){ var pv = vidB.play(); if (pv && pv.catch) pv.catch(function(){}); }
+      if (!dragging){
+        if (touched){
+          az += vaz * 0.15; vaz *= 0.90;
+          if (Math.abs(vaz) < 1e-4) vaz = 0;
+        } else if (!REDUCED){
+          idle += dt;
+          az = AZ0 + Math.sin(idle * 0.38) * 0.40;
+        }
+      }
+      if (!HAS_GSAP){
+        var d = tfTarget - tf;
+        if (Math.abs(d) > 0.0008) tf += d * Math.min(1, dt * 3.4); else tf = tfTarget;
+      }
+      layout();
+      renderer.render(scene, camera);
+    }, '160px 0px');
+
+    /* una sola dimostrazione automatica, per far capire che si cambia */
+    if (!REDUCED && 'IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if (e.isIntersecting && !touched){
+            touched = true; io.disconnect();
+            setTimeout(function(){ setSize('grand'); }, 1400);
+          }
+        });
+      },{threshold:.5});
+      io.observe(host);
+    }
+  })();
+
+  /* =====================================================================
+     SCENA C — LA CHIUSURA
+     Il volume e i suoi riflessi, ridotti a linee. Gira piano dietro al
+     testo: è la stessa cosa di cui parla tutta la pagina, a riposo.
+     ===================================================================== */
+  (function(){
+    var host = document.getElementById('closeStage');
+    if (!host || !CAN3D || REDUCED) return;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+    var renderer = makeRenderer(host, true);
+    if (!renderer) return;
+
+    var W=3.5,H=2.5,D=3.5, rig = new THREE.Group(); scene.add(rig);
+    var edges = new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D));
+    [[0,0.55],[1,0.24],[-1,0.24],[2,0.10],[-2,0.10],[3,0.045],[-3,0.045]].forEach(function(e){
+      var l = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
+        color:new THREE.Color(0xFF8B00).convertSRGBToLinear(), transparent:true, opacity:e[1]
+      }));
+      l.position.y = e[0]*H; rig.add(l);
+    });
+    camera.position.set(0, 1.1, 11.2); camera.lookAt(0, 0, 0);
+
+    var resize = fitTo(host, renderer, camera);
+    addEventListener('resize', resize); resize();
+
+    actor(host, function(dt){
+      rig.rotation.y += dt * 0.10;
+      rig.rotation.x = Math.sin(rig.rotation.y * 0.42) * 0.075;
+      renderer.render(scene, camera);
+    }, '120px 0px');
+  })();
+
+  if (HAS_GSAP){
+    addEventListener('load', function(){ setTimeout(function(){ ScrollTrigger.refresh(); }, 400); });
+  }
+})();
+</script>
